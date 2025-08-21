@@ -68,8 +68,8 @@ export default function PlanSelection({ onComplete, onBack, canGoBack, data }: P
     activationMutation.mutate(activationData);
   };
 
-  const plans = planData || [];
-  const recommendedPlan = plans.find(plan => plan.isRecommended);
+  const plans = Array.isArray(planData) ? planData : [];
+  const recommendedPlan = plans.find((plan: any) => plan.isRecommended);
 
   if (isLoading) {
     return (
@@ -143,7 +143,7 @@ export default function PlanSelection({ onComplete, onBack, canGoBack, data }: P
 
         {/* Plan Cards */}
         <div className="grid md:grid-cols-3 gap-6 mb-6">
-          {plans.map((plan: Plan) => (
+          {plans.map((plan: any) => (
             <div
               key={plan.id}
               className={`border rounded-lg p-6 cursor-pointer transition-colors relative ${

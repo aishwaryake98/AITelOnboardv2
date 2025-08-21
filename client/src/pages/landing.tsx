@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Signal, Shield, Clock, Lock, User, Building, BarChart3, Check } from "lucide-react";
+import { Signal, Shield, Clock, Lock, User, Building, BarChart3, Check, UserCheck } from "lucide-react";
 
 export default function Landing() {
   return (
@@ -20,8 +20,15 @@ export default function Landing() {
               <a href="#" className="text-gray-600 hover:text-primary transition-colors">Support</a>
             </nav>
             <div className="flex items-center space-x-4">
-              <button className="text-primary hover:text-secondary transition-colors">Sign In</button>
-              <button className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors">Get Started</button>
+              <Link href="/customer-portal">
+                <button className="text-primary hover:text-secondary transition-colors flex items-center space-x-2">
+                  <UserCheck className="w-4 h-4" />
+                  <span>Sign In</span>
+                </button>
+              </Link>
+              <Link href="/customer-portal">
+                <button className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors">Get Started</button>
+              </Link>
             </div>
           </div>
         </div>

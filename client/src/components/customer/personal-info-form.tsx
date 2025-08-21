@@ -10,7 +10,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const personalInfoSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
-  mobile: z.string().regex(/^[+]?[1-9][\d]{9,14}$/, "Please enter a valid mobile number"),
+  countryCode: z.string().min(1, "Country code is required"),
+  mobile: z.string().regex(/^[1-9][\d]{9}$/, "Please enter a valid 10-digit mobile number"),
   email: z.string().email("Please enter a valid email address"),
   dateOfBirth: z.string().min(1, "Date of birth is required"),
   address: z.string().min(10, "Address must be at least 10 characters"),
@@ -33,7 +34,8 @@ export default function PersonalInfoForm({ onComplete, data }: PersonalInfoFormP
     resolver: zodResolver(personalInfoSchema),
     defaultValues: {
       fullName: autoFillData.fullName || data.fullName || "",
-      mobile: autoFillData.mobile || data.mobile || "",
+      countryCode: "+91",
+      mobile: autoFillData.mobile?.replace("+91", "").trim() || data.mobile || "",
       email: autoFillData.email || data.email || "",
       dateOfBirth: autoFillData.dateOfBirth || data.dateOfBirth || "",
       address: autoFillData.address || data.address || "",
@@ -86,7 +88,31 @@ export default function PersonalInfoForm({ onComplete, data }: PersonalInfoFormP
                   <FormItem>
                     <FormLabel>Mobile Number *</FormLabel>
                     <FormControl>
-                      <Input placeholder="+91 98765 43210" {...field} />
+                      <div className="flex">
+                        <FormField
+                          control={form.control}
+                          name="countryCode"
+                          render={({ field: countryField }) => (
+                            <Select value={countryField.value} onValueChange={countryField.onChange}>
+                              <SelectTrigger className="w-20">
+                                <SelectValue />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="+91">+91</SelectItem>
+                                <SelectItem value="+1">+1</SelectItem>
+                                <SelectItem value="+44">+44</SelectItem>
+                                <SelectItem value="+86">+86</SelectItem>
+                                <SelectItem value="+81">+81</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
+                        <Input 
+                          placeholder="Enter 10-digit mobile number" 
+                          className="ml-2 flex-1"
+                          {...field}
+                        />
+                      </div>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

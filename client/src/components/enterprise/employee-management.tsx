@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { Upload, Plus, BarChart3, Settings, Filter, Download, MoreVertical } from "lucide-react";
+import { Upload, Plus, BarChart3, Settings, Filter, Download, MoreVertical, Users, TrendingUp, CreditCard } from "lucide-react";
 import BulkUploadModal from "./bulk-upload-modal";
 
 export default function EmployeeManagement() {
@@ -20,17 +20,20 @@ export default function EmployeeManagement() {
     {
       icon: Plus,
       title: "Add Employee",
-      description: "Individual SIM activation"
+      description: "Individual SIM activation",
+      onClick: () => alert('Add Employee functionality - Individual employee onboarding form would open here')
     },
     {
       icon: BarChart3,
       title: "Usage Analytics",
-      description: "View detailed usage reports"
+      description: "View detailed usage reports",
+      onClick: () => alert('Usage Analytics - Detailed data usage and performance analytics dashboard would open here')
     },
     {
       icon: Settings,
       title: "Billing Settings",
-      description: "Manage plans and billing"
+      description: "Manage plans and billing",
+      onClick: () => alert('Billing Settings - Plan management and billing configuration would open here')
     }
   ];
 
