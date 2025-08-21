@@ -8,11 +8,16 @@ export interface UploadResult {
 }
 
 class UploadService {
-  async uploadDocument(formData: FormData): Promise<UploadResult> {
+  async uploadDocument(formData: FormData): Promise<any> {
     try {
+      console.log('Uploading document with FormData:');
+      // Log FormData contents for debugging
+      console.log('FormData keys:', Array.from(formData.keys()));
+
       const response = await apiRequest("POST", "/api/documents/upload", formData);
       return response.json();
     } catch (error: any) {
+      console.error('Upload service error:', error);
       throw new Error(`Upload failed: ${error.message}`);
     }
   }

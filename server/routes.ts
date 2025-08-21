@@ -55,36 +55,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Document Upload and Processing Routes
-  app.post("/api/documents/upload", upload.single('document'), async (req, res) => {
-    try {
-      if (!req.file) {
-        return res.status(400).json({ message: "No file uploaded" });
+  app.post("/api/documents/upload", (req, res) => {
+    upload.single('document')(req, res, async (err) => {
+      try {
+        if (err) {
+          console.error('Multer error:', err);
+          return res.status(400).json({ message: "File upload error", error: err.message });
+        }
+
+        console.log('File received:', req.file);
+        console.log('Body:', req.body);
+
+        if (!req.file) {
+          console.error('No file in request');
+          return res.status(400).json({ message: "No file uploaded" });
+        }
+
+        const { userId, documentType } = req.body;
+        
+        if (!documentType) {
+          return res.status(400).json({ message: "Document type is required" });
+        }
+        
+        // Simulate OCR processing
+        const extractedData = await simulateOCRProcessing(req.file, documentType);
+        
+        const document = await storage.createDocument({
+          userId: userId || 'temp-user-id',
+          documentType,
+          filePath: req.file.path,
+          extractedData,
+          verificationStatus: "verified",
+          aiConfidence: extractedData.confidence
+        });
+
+        // Return both document info and extracted data for form auto-fill
+        res.json({
+          document,
+          extractedData,
+          success: true,
+          message: "Document processed successfully"
+        });
+      } catch (error: any) {
+        console.error('Upload processing error:', error);
+        res.status(500).json({ message: "Document processing failed", error: error.message });
       }
-
-      const { userId, documentType } = req.body;
-      
-      // Simulate OCR processing
-      const extractedData = await simulateOCRProcessing(req.file, documentType);
-      
-      const document = await storage.createDocument({
-        userId,
-        documentType,
-        filePath: req.file.path,
-        extractedData,
-        verificationStatus: "verified",
-        aiConfidence: extractedData.confidence
-      });
-
-      // Return both document info and extracted data for form auto-fill
-      res.json({
-        document,
-        extractedData,
-        success: true,
-        message: "Document processed successfully"
-      });
-    } catch (error: any) {
-      res.status(500).json({ message: "Document processing failed", error: error.message });
-    }
+    });
   });
 
   app.get("/api/documents/:userId", async (req, res) => {
