@@ -23,21 +23,23 @@ type PersonalInfoData = z.infer<typeof personalInfoSchema>;
 
 interface PersonalInfoFormProps {
   onComplete: (data: PersonalInfoData) => void;
-  data: Partial<PersonalInfoData>;
+  data: any;
 }
 
 export default function PersonalInfoForm({ onComplete, data }: PersonalInfoFormProps) {
+  // Auto-fill form with data from document upload if available
+  const autoFillData = data?.autoFillData || {};
   const form = useForm<PersonalInfoData>({
     resolver: zodResolver(personalInfoSchema),
     defaultValues: {
-      fullName: data.fullName || "",
-      mobile: data.mobile || "",
-      email: data.email || "",
-      dateOfBirth: data.dateOfBirth || "",
-      address: data.address || "",
-      city: data.city || "",
-      state: data.state || "",
-      pincode: data.pincode || "",
+      fullName: autoFillData.fullName || data.fullName || "",
+      mobile: autoFillData.mobile || data.mobile || "",
+      email: autoFillData.email || data.email || "",
+      dateOfBirth: autoFillData.dateOfBirth || data.dateOfBirth || "",
+      address: autoFillData.address || data.address || "",
+      city: autoFillData.city || data.city || "",
+      state: autoFillData.state || data.state || "",
+      pincode: autoFillData.pincode || data.pincode || "",
     },
   });
 

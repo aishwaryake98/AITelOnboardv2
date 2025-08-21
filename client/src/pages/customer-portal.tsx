@@ -12,8 +12,8 @@ export default function CustomerPortal() {
   const [customerData, setCustomerData] = useState<any>({});
 
   const steps = [
-    { step: 1, label: "Personal Info", component: PersonalInfoForm },
-    { step: 2, label: "Document Upload", component: DocumentUpload },
+    { step: 1, label: "Document Upload", component: DocumentUpload },
+    { step: 2, label: "Personal Info", component: PersonalInfoForm },
     { step: 3, label: "Face Verification", component: FaceVerification },
     { step: 4, label: "Plan Selection", component: PlanSelection },
   ];

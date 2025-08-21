@@ -75,7 +75,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
         aiConfidence: extractedData.confidence
       });
 
-      res.json(document);
+      // Return both document info and extracted data for form auto-fill
+      res.json({
+        document,
+        extractedData,
+        success: true,
+        message: "Document processed successfully"
+      });
     } catch (error: any) {
       res.status(500).json({ message: "Document processing failed", error: error.message });
     }
@@ -288,19 +294,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
   return httpServer;
 }
 
-// Simulate OCR processing
-async function simulateOCRProcessing(file: any, documentType: string) {
+// Enhanced OCR processing with realistic document data extraction
+async function simulateOCRProcessing(file: Express.Multer.File, documentType: string) {
   // Simulate processing delay
   await new Promise(resolve => setTimeout(resolve, 2000));
   
-  return {
-    name: "John Doe",
-    documentNumber: "****-****-1234",
-    address: "123 Main Street, Mumbai, Maharashtra",
-    dateOfBirth: "01/01/1990",
-    confidence: 0.95 + Math.random() * 0.04, // 95-99%
-    documentType
-  };
+  // Return realistic extracted data based on document type
+  switch (documentType) {
+    case 'aadhaar':
+      return {
+        fullName: "Rajesh Kumar Sharma",
+        aadhaarNumber: "2847 6391 5820",
+        dateOfBirth: "15/08/1988",
+        gender: "Male",
+        address: "House No. 45, Sector 12, Gurgaon, Haryana 122001",
+        city: "Gurgaon",
+        state: "Haryana",
+        pincode: "122001",
+        mobile: "+91 9876543210",
+        email: "rajesh.sharma@email.com",
+        confidence: 0.96,
+        documentType: "aadhaar"
+      };
+    case 'pan':
+      return {
+        fullName: "RAJESH KUMAR SHARMA", 
+        panNumber: "AABCS1234D",
+        dateOfBirth: "15/08/1988",
+        fatherName: "SURESH KUMAR SHARMA",
+        confidence: 0.94,
+        documentType: "pan"
+      };
+    case 'passport':
+      return {
+        fullName: "RAJESH KUMAR SHARMA",
+        passportNumber: "K1234567",
+        dateOfBirth: "15/08/1988",
+        placeOfBirth: "New Delhi",
+        nationality: "Indian",
+        address: "House No. 45, Sector 12, Gurgaon, Haryana 122001",
+        city: "Gurgaon",
+        state: "Haryana",
+        pincode: "122001",
+        confidence: 0.92,
+        documentType: "passport"
+      };
+    case 'driving_license':
+      return {
+        fullName: "Rajesh Kumar Sharma",
+        licenseNumber: "DL-0720220012345",
+        dateOfBirth: "15/08/1988",
+        address: "House No. 45, Sector 12, Gurgaon, Haryana 122001",
+        city: "Gurgaon",
+        state: "Haryana",
+        pincode: "122001",
+        validUpto: "14/08/2033",
+        confidence: 0.91,
+        documentType: "driving_license"
+      };
+    default:
+      return {
+        confidence: 0.85,
+        documentType: "unknown"
+      };
+  }
 }
 
 // Simulate face verification
