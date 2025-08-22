@@ -1,0 +1,1579 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TeleConnect AI - Smart Telecom Onboarding Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#1565C0',
+                        secondary: '#0277BD',
+                        success: '#2E7D32',
+                        warning: '#F57F17',
+                        error: '#C62828',
+                        'surface': '#FFFFFF',
+                        'text-primary': '#212121',
+                        'text-secondary': '#757575',
+                    }
+                }
+            }
+        };
+    </script>
+</head>
+<body class="font-inter bg-gray-50 text-text-primary">
+    <!-- @COMPONENT: App [main application wrapper] -->
+    <div id="app" class="min-h-screen">
+        
+        <!-- @COMPONENT: Header [global navigation] -->
+        <header class="bg-white shadow-sm border-b border-gray-200">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="flex justify-between items-center h-16">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-signal text-primary text-2xl"></i>
+                            <span class="text-xl font-bold text-primary">TeleConnect AI</span>
+                        </div>
+                    </div>
+                    <nav class="hidden md:flex space-x-8">
+                        <a href="#" class="text-text-secondary hover:text-primary transition-colors">Solutions</a>
+                        <a href="#" class="text-text-secondary hover:text-primary transition-colors">Pricing</a>
+                        <a href="#" class="text-text-secondary hover:text-primary transition-colors">Support</a>
+                    </nav>
+                    <div class="flex items-center space-x-4">
+                        <button id="loginBtn" class="text-primary hover:text-secondary transition-colors">Sign In</button>
+                        <button class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors">Get Started</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- @END_COMPONENT: Header -->
+
+        <!-- Main Content Container -->
+        <main class="flex-1">
+            <!-- @COMPONENT: LandingPage [initial user type selection] -->
+            <section id="landingPage" class="py-16 bg-gradient-to-br from-blue-50 to-indigo-100">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center mb-16">
+                        <h1 class="text-4xl md:text-6xl font-bold text-text-primary mb-6">
+                            AI-Powered Telecom<br>
+                            <span class="text-primary">Onboarding Platform</span>
+                        </h1>
+                        <p class="text-xl text-text-secondary max-w-3xl mx-auto mb-8">
+                            Streamline SIM activation with intelligent document verification, face recognition, and fraud detection. 
+                            Get instant onboarding for customers, enterprises, and operators.
+                        </p>
+                        <div class="flex flex-wrap justify-center gap-4 mb-12">
+                            <div class="flex items-center bg-white px-4 py-2 rounded-full shadow-sm">
+                                <i class="fas fa-shield-alt text-success mr-2"></i>
+                                <span class="text-sm font-medium">AI Fraud Detection</span>
+                            </div>
+                            <div class="flex items-center bg-white px-4 py-2 rounded-full shadow-sm">
+                                <i class="fas fa-clock text-primary mr-2"></i>
+                                <span class="text-sm font-medium">Instant Verification</span>
+                            </div>
+                            <div class="flex items-center bg-white px-4 py-2 rounded-full shadow-sm">
+                                <i class="fas fa-lock text-warning mr-2"></i>
+                                <span class="text-sm font-medium">TRAI Compliant</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Type Selection Cards -->
+                    <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                        <!-- Customer Portal Card -->
+                        <div class="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+                            <div class="p-8 text-center">
+                                <div class="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <i class="fas fa-user text-2xl text-primary"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-4">Customer Portal</h3>
+                                <p class="text-text-secondary mb-6">Personal SIM/eSIM activation with AI-powered KYC verification</p>
+                                <ul class="text-left space-y-3 mb-8">
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-3"></i>
+                                        <span class="text-sm">Instant document verification</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-3"></i>
+                                        <span class="text-sm">Face liveness detection</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-3"></i>
+                                        <span class="text-sm">AI plan recommendations</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-3"></i>
+                                        <span class="text-sm">Real-time activation status</span>
+                                    </li>
+                                </ul>
+                                <button onclick="showCustomerPortal()" class="w-full bg-primary text-white py-3 rounded-lg hover:bg-secondary transition-colors font-medium">
+                                    Start Personal Onboarding
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Enterprise Portal Card -->
+                        <div class="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+                            <div class="p-8 text-center">
+                                <div class="w-16 h-16 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <i class="fas fa-building text-2xl text-secondary"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-4">Enterprise Portal</h3>
+                                <p class="text-text-secondary mb-6">Bulk SIM management and employee onboarding dashboard</p>
+                                <ul class="text-left space-y-3 mb-8">
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-3"></i>
+                                        <span class="text-sm">Bulk KYC processing</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-3"></i>
+                                        <span class="text-sm">Employee SIM tracking</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-3"></i>
+                                        <span class="text-sm">Billing dashboard</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-3"></i>
+                                        <span class="text-sm">Usage analytics</span>
+                                    </li>
+                                </ul>
+                                <button onclick="showEnterprisePortal()" class="w-full bg-secondary text-white py-3 rounded-lg hover:bg-primary transition-colors font-medium">
+                                    Access Enterprise Portal
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Operator Dashboard Card -->
+                        <div class="bg-white rounded-2xl shadow-xl hover:shadow-2xl transition-all duration-300 overflow-hidden">
+                            <div class="p-8 text-center">
+                                <div class="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                                    <i class="fas fa-chart-line text-2xl text-success"></i>
+                                </div>
+                                <h3 class="text-2xl font-bold mb-4">Operator Dashboard</h3>
+                                <p class="text-text-secondary mb-6">Advanced analytics and fraud monitoring for telecom operators</p>
+                                <ul class="text-left space-y-3 mb-8">
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-3"></i>
+                                        <span class="text-sm">Real-time fraud alerts</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-3"></i>
+                                        <span class="text-sm">Activation approvals</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-3"></i>
+                                        <span class="text-sm">Comprehensive analytics</span>
+                                    </li>
+                                    <li class="flex items-center">
+                                        <i class="fas fa-check text-success mr-3"></i>
+                                        <span class="text-sm">API integrations</span>
+                                    </li>
+                                </ul>
+                                <button onclick="showOperatorDashboard()" class="w-full bg-success text-white py-3 rounded-lg hover:bg-primary transition-colors font-medium">
+                                    Open Operator Dashboard
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- @END_COMPONENT: LandingPage -->
+
+            <!-- @COMPONENT: CustomerPortal [customer onboarding flow] -->
+            <div id="customerPortal" class="hidden">
+                <!-- Customer Portal Header -->
+                <div class="bg-white border-b border-gray-200">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="flex items-center justify-between h-16">
+                            <div class="flex items-center space-x-4">
+                                <button onclick="showLandingPage()" class="text-text-secondary hover:text-primary">
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                                <h2 class="text-xl font-semibold">Customer Onboarding</h2>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="flex items-center space-x-2 text-sm text-text-secondary">
+                                    <i class="fas fa-shield-alt text-success"></i>
+                                    <span>Secure Process</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Onboarding Steps Progress -->
+                <div class="bg-white border-b border-gray-200">
+                    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">1</div>
+                                <span class="text-sm font-medium text-primary">Personal Info</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-gray-200 mx-4"></div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-8 h-8 bg-gray-200 text-text-secondary rounded-full flex items-center justify-center text-sm font-medium">2</div>
+                                <span class="text-sm text-text-secondary">Document Upload</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-gray-200 mx-4"></div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-8 h-8 bg-gray-200 text-text-secondary rounded-full flex items-center justify-center text-sm font-medium">3</div>
+                                <span class="text-sm text-text-secondary">Face Verification</span>
+                            </div>
+                            <div class="flex-1 h-1 bg-gray-200 mx-4"></div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-8 h-8 bg-gray-200 text-text-secondary rounded-full flex items-center justify-center text-sm font-medium">4</div>
+                                <span class="text-sm text-text-secondary">Plan Selection</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customer Onboarding Form -->
+                <div class="py-8">
+                    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="grid lg:grid-cols-3 gap-8">
+                            <!-- Main Form -->
+                            <div class="lg:col-span-2">
+                                <!-- @COMPONENT: PersonalInfoForm [step 1 of onboarding] -->
+                                <div id="personalInfoStep" class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                                    <h3 class="text-xl font-semibold mb-6">Personal Information</h3>
+                                    <!-- @STATE: formData:object = {} -->
+                                    <form class="space-y-6">
+                                        <div class="grid md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label class="block text-sm font-medium text-text-primary mb-2">Full Name *</label>
+                                                <input type="text" data-bind="personalInfo.fullName" placeholder="Enter your full name" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-text-primary mb-2">Mobile Number *</label>
+                                                <input type="tel" data-bind="personalInfo.mobile" placeholder="+91 98765 43210" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                            </div>
+                                        </div>
+                                        <div class="grid md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label class="block text-sm font-medium text-text-primary mb-2">Email Address *</label>
+                                                <input type="email" data-bind="personalInfo.email" placeholder="your.email@example.com" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-text-primary mb-2">Date of Birth *</label>
+                                                <input type="date" data-bind="personalInfo.dob" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label class="block text-sm font-medium text-text-primary mb-2">Address *</label>
+                                            <textarea data-bind="personalInfo.address" rows="3" placeholder="Enter your complete address" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"></textarea>
+                                        </div>
+                                        <div class="grid md:grid-cols-3 gap-6">
+                                            <div>
+                                                <label class="block text-sm font-medium text-text-primary mb-2">City *</label>
+                                                <input type="text" data-bind="personalInfo.city" placeholder="City" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-text-primary mb-2">State *</label>
+                                                <select data-bind="personalInfo.state" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                                    <option value="">Select State</option>
+                                                    <option value="maharashtra" data-mock="true">Maharashtra</option>
+                                                    <option value="delhi" data-mock="true">Delhi</option>
+                                                    <option value="karnataka" data-mock="true">Karnataka</option>
+                                                </select>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-text-primary mb-2">PIN Code *</label>
+                                                <input type="text" data-bind="personalInfo.pincode" placeholder="400001" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                            </div>
+                                        </div>
+                                        <button type="button" onclick="showDocumentUpload()" class="w-full bg-primary text-white py-3 rounded-lg hover:bg-secondary transition-colors font-medium">
+                                            Continue to Document Upload
+                                        </button>
+                                    </form>
+                                </div>
+                                <!-- @END_COMPONENT: PersonalInfoForm -->
+
+                                <!-- @COMPONENT: DocumentUploadStep [step 2 - AI document processing] -->
+                                <div id="documentUploadStep" class="bg-white rounded-xl shadow-lg p-6 mb-6 hidden">
+                                    <h3 class="text-xl font-semibold mb-6">Document Verification</h3>
+                                    
+                                    <!-- Document Type Selection -->
+                                    <div class="mb-6">
+                                        <label class="block text-sm font-medium text-text-primary mb-3">Select Document Type</label>
+                                        <div class="grid md:grid-cols-2 gap-4">
+                                            <div class="border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary transition-colors" onclick="selectDocumentType('aadhaar')">
+                                                <div class="flex items-center space-x-3">
+                                                    <i class="fas fa-id-card text-primary text-xl"></i>
+                                                    <div>
+                                                        <h4 class="font-medium">Aadhaar Card</h4>
+                                                        <p class="text-sm text-text-secondary">Government issued ID with photo</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="border-2 border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary transition-colors" onclick="selectDocumentType('pan')">
+                                                <div class="flex items-center space-x-3">
+                                                    <i class="fas fa-credit-card text-primary text-xl"></i>
+                                                    <div>
+                                                        <h4 class="font-medium">PAN Card</h4>
+                                                        <p class="text-sm text-text-secondary">Permanent Account Number card</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Document Upload Area -->
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-6">
+                                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                        <h4 class="text-lg font-medium mb-2">Upload Document</h4>
+                                        <p class="text-text-secondary mb-4">Drag and drop or click to select</p>
+                                        <input type="file" id="documentUpload" class="hidden" accept="image/*,.pdf" data-implementation="Handle file upload and OCR processing">
+                                        <button onclick="document.getElementById('documentUpload').click()" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-secondary transition-colors">
+                                            Choose File
+                                        </button>
+                                        <p class="text-xs text-text-secondary mt-2">Supported: JPG, PNG, PDF (max 10MB)</p>
+                                    </div>
+
+                                    <!-- DigiLocker Option -->
+                                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex items-center space-x-3">
+                                                <i class="fas fa-link text-primary text-xl"></i>
+                                                <div>
+                                                    <h4 class="font-medium">Connect DigiLocker</h4>
+                                                    <p class="text-sm text-text-secondary">Instantly verify documents from DigiLocker</p>
+                                                </div>
+                                            </div>
+                                            <button class="bg-primary text-white px-4 py-2 rounded-lg text-sm hover:bg-secondary transition-colors">
+                                                Connect
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- AI Processing Status -->
+                                    <div id="aiProcessingStatus" class="hidden bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+                                            <div>
+                                                <h4 class="font-medium">AI Processing Document...</h4>
+                                                <p class="text-sm text-text-secondary">Extracting information and verifying authenticity</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Auto-filled Form (after OCR) -->
+                                    <div id="extractedDataForm" class="hidden">
+                                        <h4 class="font-medium mb-4 text-success">✓ Document Verified - Please confirm extracted information</h4>
+                                        <div class="grid md:grid-cols-2 gap-4 mb-6">
+                                            <div>
+                                                <label class="block text-sm font-medium text-text-primary mb-2">Name (from document)</label>
+                                                <input type="text" value="John Doe" data-mock="true" class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50" readonly>
+                                            </div>
+                                            <div>
+                                                <label class="block text-sm font-medium text-text-primary mb-2">Document Number</label>
+                                                <input type="text" value="****-****-1234" data-mock="true" class="w-full px-4 py-3 border border-gray-300 rounded-lg bg-gray-50" readonly>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex space-x-4">
+                                        <button onclick="showPersonalInfo()" class="flex-1 bg-gray-200 text-text-primary py-3 rounded-lg hover:bg-gray-300 transition-colors font-medium">
+                                            Back
+                                        </button>
+                                        <button onclick="showFaceVerification()" class="flex-1 bg-primary text-white py-3 rounded-lg hover:bg-secondary transition-colors font-medium">
+                                            Continue to Face Verification
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- @END_COMPONENT: DocumentUploadStep -->
+
+                                <!-- @COMPONENT: FaceVerificationStep [step 3 - AI face verification] -->
+                                <div id="faceVerificationStep" class="bg-white rounded-xl shadow-lg p-6 mb-6 hidden">
+                                    <h3 class="text-xl font-semibold mb-6">Face Verification</h3>
+                                    
+                                    <div class="text-center mb-6">
+                                        <div class="w-32 h-32 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
+                                            <i class="fas fa-camera text-3xl text-gray-400"></i>
+                                        </div>
+                                        <h4 class="text-lg font-medium mb-2">Position your face in the camera</h4>
+                                        <p class="text-text-secondary">Look directly at the camera and follow the instructions</p>
+                                    </div>
+
+                                    <!-- Face Verification Instructions -->
+                                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                                        <h5 class="font-medium mb-2">Verification Steps:</h5>
+                                        <ul class="text-sm space-y-1">
+                                            <li class="flex items-center">
+                                                <i class="fas fa-check text-success mr-2"></i>
+                                                Look directly at the camera
+                                            </li>
+                                            <li class="flex items-center">
+                                                <i class="fas fa-circle text-gray-400 mr-2"></i>
+                                                Blink when prompted for liveness detection
+                                            </li>
+                                            <li class="flex items-center">
+                                                <i class="fas fa-circle text-gray-400 mr-2"></i>
+                                                Turn head left and right
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Camera Interface -->
+                                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-6">
+                                        <div class="w-48 h-36 bg-gray-200 rounded-lg mx-auto mb-4 flex items-center justify-center">
+                                            <i class="fas fa-video text-2xl text-gray-400"></i>
+                                        </div>
+                                        <button onclick="startFaceVerification()" class="bg-primary text-white px-6 py-3 rounded-lg hover:bg-secondary transition-colors">
+                                            Start Camera
+                                        </button>
+                                    </div>
+
+                                    <!-- AI Verification Status -->
+                                    <div id="faceVerificationStatus" class="hidden bg-green-50 border border-green-200 rounded-lg p-4 mb-6">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-check-circle text-success text-xl"></i>
+                                            <div>
+                                                <h4 class="font-medium text-success">Face Verification Successful</h4>
+                                                <p class="text-sm text-text-secondary">Liveness confirmed • Face match: 98.5%</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex space-x-4">
+                                        <button onclick="showDocumentUpload()" class="flex-1 bg-gray-200 text-text-primary py-3 rounded-lg hover:bg-gray-300 transition-colors font-medium">
+                                            Back
+                                        </button>
+                                        <button onclick="showPlanSelection()" class="flex-1 bg-primary text-white py-3 rounded-lg hover:bg-secondary transition-colors font-medium">
+                                            Continue to Plan Selection
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- @END_COMPONENT: FaceVerificationStep -->
+
+                                <!-- @COMPONENT: PlanSelectionStep [step 4 - AI plan recommendations] -->
+                                <div id="planSelectionStep" class="bg-white rounded-xl shadow-lg p-6 mb-6 hidden">
+                                    <h3 class="text-xl font-semibold mb-6">Select Your Plan</h3>
+                                    
+                                    <!-- AI Recommendation Banner -->
+                                    <div class="bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20 rounded-lg p-4 mb-6">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-brain text-primary text-xl"></i>
+                                            <div>
+                                                <h4 class="font-medium">AI Recommendation</h4>
+                                                <p class="text-sm text-text-secondary">Based on your usage pattern, we recommend the Premium Plan</p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Plan Cards -->
+                                    <div class="grid md:grid-cols-3 gap-6 mb-6">
+                                        <!-- Basic Plan -->
+                                        <div class="border border-gray-200 rounded-lg p-6 hover:border-primary transition-colors cursor-pointer">
+                                            <div class="text-center">
+                                                <h4 class="text-lg font-semibold mb-2">Basic</h4>
+                                                <div class="text-2xl font-bold text-primary mb-4">₹299<span class="text-sm font-normal text-text-secondary">/month</span></div>
+                                                <ul class="text-sm space-y-2 text-left">
+                                                    <li class="flex items-center">
+                                                        <i class="fas fa-check text-success mr-2"></i>
+                                                        2GB daily data
+                                                    </li>
+                                                    <li class="flex items-center">
+                                                        <i class="fas fa-check text-success mr-2"></i>
+                                                        Unlimited calls
+                                                    </li>
+                                                    <li class="flex items-center">
+                                                        <i class="fas fa-check text-success mr-2"></i>
+                                                        100 SMS/day
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <!-- Premium Plan (Recommended) -->
+                                        <div class="border-2 border-primary rounded-lg p-6 relative bg-primary/5">
+                                            <div class="absolute -top-3 left-1/2 transform -translate-x-1/2">
+                                                <span class="bg-primary text-white text-xs px-3 py-1 rounded-full">AI Recommended</span>
+                                            </div>
+                                            <div class="text-center">
+                                                <h4 class="text-lg font-semibold mb-2">Premium</h4>
+                                                <div class="text-2xl font-bold text-primary mb-4">₹499<span class="text-sm font-normal text-text-secondary">/month</span></div>
+                                                <ul class="text-sm space-y-2 text-left">
+                                                    <li class="flex items-center">
+                                                        <i class="fas fa-check text-success mr-2"></i>
+                                                        5GB daily data
+                                                    </li>
+                                                    <li class="flex items-center">
+                                                        <i class="fas fa-check text-success mr-2"></i>
+                                                        Unlimited calls
+                                                    </li>
+                                                    <li class="flex items-center">
+                                                        <i class="fas fa-check text-success mr-2"></i>
+                                                        Unlimited SMS
+                                                    </li>
+                                                    <li class="flex items-center">
+                                                        <i class="fas fa-check text-success mr-2"></i>
+                                                        OTT benefits
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                        <!-- Enterprise Plan -->
+                                        <div class="border border-gray-200 rounded-lg p-6 hover:border-primary transition-colors cursor-pointer">
+                                            <div class="text-center">
+                                                <h4 class="text-lg font-semibold mb-2">Enterprise</h4>
+                                                <div class="text-2xl font-bold text-primary mb-4">₹799<span class="text-sm font-normal text-text-secondary">/month</span></div>
+                                                <ul class="text-sm space-y-2 text-left">
+                                                    <li class="flex items-center">
+                                                        <i class="fas fa-check text-success mr-2"></i>
+                                                        Unlimited data
+                                                    </li>
+                                                    <li class="flex items-center">
+                                                        <i class="fas fa-check text-success mr-2"></i>
+                                                        Priority network
+                                                    </li>
+                                                    <li class="flex items-center">
+                                                        <i class="fas fa-check text-success mr-2"></i>
+                                                        Enterprise support
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- SIM Type Selection -->
+                                    <div class="mb-6">
+                                        <h5 class="font-medium mb-3">Choose SIM Type</h5>
+                                        <div class="grid md:grid-cols-3 gap-4">
+                                            <div class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary transition-colors">
+                                                <div class="text-center">
+                                                    <i class="fas fa-sim-card text-primary text-2xl mb-2"></i>
+                                                    <h6 class="font-medium">Physical SIM</h6>
+                                                    <p class="text-xs text-text-secondary">Home delivery</p>
+                                                </div>
+                                            </div>
+                                            <div class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary transition-colors">
+                                                <div class="text-center">
+                                                    <i class="fas fa-mobile-alt text-primary text-2xl mb-2"></i>
+                                                    <h6 class="font-medium">eSIM</h6>
+                                                    <p class="text-xs text-text-secondary">Instant activation</p>
+                                                </div>
+                                            </div>
+                                            <div class="border border-gray-200 rounded-lg p-4 cursor-pointer hover:border-primary transition-colors">
+                                                <div class="text-center">
+                                                    <i class="fas fa-wifi text-primary text-2xl mb-2"></i>
+                                                    <h6 class="font-medium">Dongle</h6>
+                                                    <p class="text-xs text-text-secondary">Data only</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="flex space-x-4">
+                                        <button onclick="showFaceVerification()" class="flex-1 bg-gray-200 text-text-primary py-3 rounded-lg hover:bg-gray-300 transition-colors font-medium">
+                                            Back
+                                        </button>
+                                        <button onclick="completeOnboarding()" class="flex-1 bg-success text-white py-3 rounded-lg hover:bg-green-700 transition-colors font-medium">
+                                            Complete Onboarding
+                                        </button>
+                                    </div>
+                                </div>
+                                <!-- @END_COMPONENT: PlanSelectionStep -->
+                            </div>
+
+                            <!-- Sidebar with Help and Security -->
+                            <div class="lg:col-span-1">
+                                <!-- Security Information -->
+                                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                                    <h4 class="font-semibold mb-4">Security & Privacy</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-shield-alt text-success"></i>
+                                            <span class="text-sm">256-bit encryption</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-lock text-success"></i>
+                                            <span class="text-sm">TRAI compliant</span>
+                                        </div>
+                                        <div class="flex items-center space-x-3">
+                                            <i class="fas fa-user-shield text-success"></i>
+                                            <span class="text-sm">GDPR protected</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Help Support -->
+                                <div class="bg-white rounded-xl shadow-lg p-6">
+                                    <h4 class="font-semibold mb-4">Need Help?</h4>
+                                    <p class="text-sm text-text-secondary mb-4">Our AI assistant is here to help you with the onboarding process.</p>
+                                    <button class="w-full bg-primary text-white py-2 rounded-lg text-sm hover:bg-secondary transition-colors">
+                                        <i class="fas fa-comments mr-2"></i>
+                                        Chat Support
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: CustomerPortal -->
+
+            <!-- @COMPONENT: EnterprisePortal [enterprise dashboard and bulk management] -->
+            <div id="enterprisePortal" class="hidden">
+                <!-- Enterprise Portal Header -->
+                <div class="bg-white border-b border-gray-200">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="flex items-center justify-between h-16">
+                            <div class="flex items-center space-x-4">
+                                <button onclick="showLandingPage()" class="text-text-secondary hover:text-primary">
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                                <h2 class="text-xl font-semibold">Enterprise Portal</h2>
+                                <span class="bg-secondary/10 text-secondary px-3 py-1 rounded-full text-sm">TechCorp Pvt Ltd</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <button class="text-text-secondary hover:text-primary">
+                                    <i class="fas fa-bell"></i>
+                                </button>
+                                <div class="w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center">
+                                    <span class="text-sm font-medium">A</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enterprise Dashboard -->
+                <div class="py-8">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        
+                        <!-- Stats Overview -->
+                        <div class="grid md:grid-cols-4 gap-6 mb-8">
+                            <div class="bg-white rounded-xl shadow-lg p-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-text-secondary text-sm">Active SIMs</p>
+                                        <p class="text-2xl font-bold" data-bind="stats.activeSims">247</p>
+                                    </div>
+                                    <i class="fas fa-sim-card text-2xl text-primary"></i>
+                                </div>
+                                <div class="mt-2 text-sm text-success">
+                                    <i class="fas fa-arrow-up mr-1"></i>
+                                    +12 this month
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl shadow-lg p-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-text-secondary text-sm">Pending Activations</p>
+                                        <p class="text-2xl font-bold" data-bind="stats.pendingActivations">8</p>
+                                    </div>
+                                    <i class="fas fa-clock text-2xl text-warning"></i>
+                                </div>
+                                <div class="mt-2 text-sm text-warning">
+                                    Requires approval
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl shadow-lg p-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-text-secondary text-sm">Monthly Spend</p>
+                                        <p class="text-2xl font-bold" data-bind="stats.monthlySpend">₹1,23,450</p>
+                                    </div>
+                                    <i class="fas fa-chart-line text-2xl text-success"></i>
+                                </div>
+                                <div class="mt-2 text-sm text-text-secondary">
+                                    Budget: ₹2,00,000
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl shadow-lg p-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-text-secondary text-sm">Data Usage</p>
+                                        <p class="text-2xl font-bold" data-bind="stats.dataUsage">2.4TB</p>
+                                    </div>
+                                    <i class="fas fa-database text-2xl text-secondary"></i>
+                                </div>
+                                <div class="mt-2 text-sm text-text-secondary">
+                                    This month
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid lg:grid-cols-3 gap-8">
+                            <!-- Main Content -->
+                            <div class="lg:col-span-2">
+                                <!-- Quick Actions -->
+                                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                                    <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
+                                    <div class="grid md:grid-cols-2 gap-4">
+                                        <button onclick="showBulkUpload()" class="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-primary transition-colors">
+                                            <i class="fas fa-upload text-primary text-xl"></i>
+                                            <div class="text-left">
+                                                <h4 class="font-medium">Bulk KYC Upload</h4>
+                                                <p class="text-sm text-text-secondary">Upload employee documents in bulk</p>
+                                            </div>
+                                        </button>
+                                        <button class="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-primary transition-colors">
+                                            <i class="fas fa-plus text-primary text-xl"></i>
+                                            <div class="text-left">
+                                                <h4 class="font-medium">Add Employee</h4>
+                                                <p class="text-sm text-text-secondary">Individual SIM activation</p>
+                                            </div>
+                                        </button>
+                                        <button class="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-primary transition-colors">
+                                            <i class="fas fa-chart-bar text-primary text-xl"></i>
+                                            <div class="text-left">
+                                                <h4 class="font-medium">Usage Analytics</h4>
+                                                <p class="text-sm text-text-secondary">View detailed usage reports</p>
+                                            </div>
+                                        </button>
+                                        <button class="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:border-primary transition-colors">
+                                            <i class="fas fa-cog text-primary text-xl"></i>
+                                            <div class="text-left">
+                                                <h4 class="font-medium">Billing Settings</h4>
+                                                <p class="text-sm text-text-secondary">Manage plans and billing</p>
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Employee SIM Management -->
+                                <div class="bg-white rounded-xl shadow-lg p-6">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="text-lg font-semibold">Employee SIM Management</h3>
+                                        <div class="flex space-x-2">
+                                            <button class="text-text-secondary hover:text-primary">
+                                                <i class="fas fa-filter"></i>
+                                            </button>
+                                            <button class="text-text-secondary hover:text-primary">
+                                                <i class="fas fa-download"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <!-- Search and Filters -->
+                                    <div class="flex space-x-4 mb-4">
+                                        <div class="flex-1">
+                                            <input type="text" placeholder="Search employees..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        </div>
+                                        <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                            <option>All Status</option>
+                                            <option data-mock="true">Active</option>
+                                            <option data-mock="true">Pending</option>
+                                            <option data-mock="true">Suspended</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Employee Table -->
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full">
+                                            <thead>
+                                                <tr class="border-b border-gray-200">
+                                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Employee</th>
+                                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">SIM Number</th>
+                                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Plan</th>
+                                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Status</th>
+                                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Usage</th>
+                                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- @MAP: employees.map(employee => ( -->
+                                                <tr class="border-b border-gray-100" data-mock="true">
+                                                    <td class="py-3">
+                                                        <div class="flex items-center space-x-3">
+                                                            <div class="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm">R</div>
+                                                            <div>
+                                                                <p class="font-medium">Rahul Sharma</p>
+                                                                <p class="text-sm text-text-secondary">rahul@techcorp.com</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="py-3 text-sm">9876543210</td>
+                                                    <td class="py-3 text-sm">Premium</td>
+                                                    <td class="py-3">
+                                                        <span class="bg-success/10 text-success px-2 py-1 rounded-full text-xs">Active</span>
+                                                    </td>
+                                                    <td class="py-3 text-sm">4.2GB</td>
+                                                    <td class="py-3">
+                                                        <button class="text-text-secondary hover:text-primary">
+                                                            <i class="fas fa-ellipsis-v"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <tr class="border-b border-gray-100" data-mock="true">
+                                                    <td class="py-3">
+                                                        <div class="flex items-center space-x-3">
+                                                            <div class="w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center text-sm">P</div>
+                                                            <div>
+                                                                <p class="font-medium">Priya Singh</p>
+                                                                <p class="text-sm text-text-secondary">priya@techcorp.com</p>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td class="py-3 text-sm">9876543211</td>
+                                                    <td class="py-3 text-sm">Basic</td>
+                                                    <td class="py-3">
+                                                        <span class="bg-warning/10 text-warning px-2 py-1 rounded-full text-xs">Pending</span>
+                                                    </td>
+                                                    <td class="py-3 text-sm">-</td>
+                                                    <td class="py-3">
+                                                        <button class="text-text-secondary hover:text-primary">
+                                                            <i class="fas fa-ellipsis-v"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                                <!-- @END_MAP )) -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sidebar -->
+                            <div class="lg:col-span-1">
+                                <!-- Recent Activities -->
+                                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                                    <h4 class="font-semibold mb-4">Recent Activities</h4>
+                                    <div class="space-y-4">
+                                        <div class="flex items-start space-x-3" data-mock="true">
+                                            <div class="w-8 h-8 bg-success/10 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-check text-success text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium">SIM activated for Rahul Sharma</p>
+                                                <p class="text-xs text-text-secondary">2 hours ago</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-3" data-mock="true">
+                                            <div class="w-8 h-8 bg-warning/10 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-upload text-warning text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium">Bulk KYC upload completed</p>
+                                                <p class="text-xs text-text-secondary">1 day ago</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-start space-x-3" data-mock="true">
+                                            <div class="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-user-plus text-primary text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm font-medium">5 new employees added</p>
+                                                <p class="text-xs text-text-secondary">2 days ago</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Support -->
+                                <div class="bg-white rounded-xl shadow-lg p-6">
+                                    <h4 class="font-semibold mb-4">Enterprise Support</h4>
+                                    <p class="text-sm text-text-secondary mb-4">Get dedicated support for your enterprise needs.</p>
+                                    <div class="space-y-2">
+                                        <button class="w-full bg-primary text-white py-2 rounded-lg text-sm hover:bg-secondary transition-colors">
+                                            <i class="fas fa-headset mr-2"></i>
+                                            Contact Support
+                                        </button>
+                                        <button class="w-full bg-gray-100 text-text-primary py-2 rounded-lg text-sm hover:bg-gray-200 transition-colors">
+                                            <i class="fas fa-book mr-2"></i>
+                                            Documentation
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- @COMPONENT: BulkUploadModal [bulk KYC upload interface] -->
+                <div id="bulkUploadModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-90vh overflow-y-auto">
+                        <div class="p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xl font-semibold">Bulk KYC Upload</h3>
+                                <button onclick="hideBulkUpload()" class="text-text-secondary hover:text-primary">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+
+                            <!-- Upload Steps -->
+                            <div class="mb-6">
+                                <div class="flex items-center justify-between text-sm">
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-6 h-6 bg-primary text-white rounded-full flex items-center justify-center text-xs">1</div>
+                                        <span class="text-primary">Upload CSV</span>
+                                    </div>
+                                    <div class="flex-1 h-1 bg-gray-200 mx-4"></div>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-6 h-6 bg-gray-200 text-text-secondary rounded-full flex items-center justify-center text-xs">2</div>
+                                        <span class="text-text-secondary">Upload Documents</span>
+                                    </div>
+                                    <div class="flex-1 h-1 bg-gray-200 mx-4"></div>
+                                    <div class="flex items-center space-x-2">
+                                        <div class="w-6 h-6 bg-gray-200 text-text-secondary rounded-full flex items-center justify-center text-xs">3</div>
+                                        <span class="text-text-secondary">AI Processing</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- CSV Upload -->
+                            <div class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-6">
+                                <i class="fas fa-file-csv text-4xl text-gray-400 mb-4"></i>
+                                <h4 class="text-lg font-medium mb-2">Upload Employee Data CSV</h4>
+                                <p class="text-text-secondary mb-4">Upload a CSV file with employee information</p>
+                                <input type="file" id="csvUpload" class="hidden" accept=".csv" data-implementation="Handle CSV file upload and parsing">
+                                <button onclick="document.getElementById('csvUpload').click()" class="bg-primary text-white px-6 py-2 rounded-lg hover:bg-secondary transition-colors">
+                                    Choose CSV File
+                                </button>
+                                <p class="text-xs text-text-secondary mt-2">
+                                    <a href="#" class="text-primary hover:underline">Download sample CSV template</a>
+                                </p>
+                            </div>
+
+                            <!-- Document Upload Instructions -->
+                            <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+                                <h5 class="font-medium mb-2">Required Documents for Each Employee:</h5>
+                                <ul class="text-sm space-y-1">
+                                    <li>• Aadhaar Card (front and back)</li>
+                                    <li>• PAN Card</li>
+                                    <li>• Passport size photograph</li>
+                                    <li>• Address proof (if different from Aadhaar)</li>
+                                </ul>
+                            </div>
+
+                            <div class="flex space-x-4">
+                                <button onclick="hideBulkUpload()" class="flex-1 bg-gray-200 text-text-primary py-3 rounded-lg hover:bg-gray-300 transition-colors font-medium">
+                                    Cancel
+                                </button>
+                                <button class="flex-1 bg-primary text-white py-3 rounded-lg hover:bg-secondary transition-colors font-medium">
+                                    Continue
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- @END_COMPONENT: BulkUploadModal -->
+            </div>
+            <!-- @END_COMPONENT: EnterprisePortal -->
+
+            <!-- @COMPONENT: OperatorDashboard [telecom operator analytics and monitoring] -->
+            <div id="operatorDashboard" class="hidden">
+                <!-- Operator Dashboard Header -->
+                <div class="bg-white border-b border-gray-200">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="flex items-center justify-between h-16">
+                            <div class="flex items-center space-x-4">
+                                <button onclick="showLandingPage()" class="text-text-secondary hover:text-primary">
+                                    <i class="fas fa-arrow-left"></i>
+                                </button>
+                                <h2 class="text-xl font-semibold">Operator Dashboard</h2>
+                                <span class="bg-success/10 text-success px-3 py-1 rounded-full text-sm">Live</span>
+                            </div>
+                            <div class="flex items-center space-x-4">
+                                <div class="relative">
+                                    <button class="text-text-secondary hover:text-primary">
+                                        <i class="fas fa-bell"></i>
+                                    </button>
+                                    <span class="absolute -top-1 -right-1 w-3 h-3 bg-error rounded-full"></span>
+                                </div>
+                                <div class="w-8 h-8 bg-success text-white rounded-full flex items-center justify-center">
+                                    <span class="text-sm font-medium">O</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Operator Analytics Dashboard -->
+                <div class="py-8">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        
+                        <!-- Real-time Stats -->
+                        <div class="grid md:grid-cols-5 gap-6 mb-8">
+                            <div class="bg-white rounded-xl shadow-lg p-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-text-secondary text-sm">Today's Activations</p>
+                                        <p class="text-2xl font-bold" data-bind="operatorStats.todayActivations">1,247</p>
+                                    </div>
+                                    <i class="fas fa-chart-line text-2xl text-success"></i>
+                                </div>
+                                <div class="mt-2 text-sm text-success">
+                                    <i class="fas fa-arrow-up mr-1"></i>
+                                    +15.2% from yesterday
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl shadow-lg p-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-text-secondary text-sm">Pending Approvals</p>
+                                        <p class="text-2xl font-bold" data-bind="operatorStats.pendingApprovals">43</p>
+                                    </div>
+                                    <i class="fas fa-hourglass-half text-2xl text-warning"></i>
+                                </div>
+                                <div class="mt-2 text-sm text-warning">
+                                    Requires attention
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl shadow-lg p-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-text-secondary text-sm">Fraud Alerts</p>
+                                        <p class="text-2xl font-bold text-error" data-bind="operatorStats.fraudAlerts">7</p>
+                                    </div>
+                                    <i class="fas fa-exclamation-triangle text-2xl text-error"></i>
+                                </div>
+                                <div class="mt-2 text-sm text-error">
+                                    Critical: 2 • High: 5
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl shadow-lg p-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-text-secondary text-sm">AI Accuracy</p>
+                                        <p class="text-2xl font-bold" data-bind="operatorStats.aiAccuracy">98.7%</p>
+                                    </div>
+                                    <i class="fas fa-brain text-2xl text-primary"></i>
+                                </div>
+                                <div class="mt-2 text-sm text-success">
+                                    <i class="fas fa-arrow-up mr-1"></i>
+                                    +0.3% this week
+                                </div>
+                            </div>
+
+                            <div class="bg-white rounded-xl shadow-lg p-6">
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-text-secondary text-sm">Active Networks</p>
+                                        <p class="text-2xl font-bold" data-bind="operatorStats.activeNetworks">99.9%</p>
+                                    </div>
+                                    <i class="fas fa-signal text-2xl text-success"></i>
+                                </div>
+                                <div class="mt-2 text-sm text-success">
+                                    All systems operational
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="grid lg:grid-cols-3 gap-8">
+                            <!-- Main Content -->
+                            <div class="lg:col-span-2">
+                                <!-- Fraud Detection Alerts -->
+                                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="text-lg font-semibold">AI Fraud Detection Alerts</h3>
+                                        <div class="flex space-x-2">
+                                            <span class="bg-error/10 text-error px-2 py-1 rounded-full text-xs">7 Active</span>
+                                            <button class="text-text-secondary hover:text-primary">
+                                                <i class="fas fa-filter"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="space-y-4">
+                                        <!-- Critical Alert -->
+                                        <div class="border-l-4 border-error bg-error/5 p-4 rounded-r-lg" data-mock="true">
+                                            <div class="flex items-start justify-between">
+                                                <div>
+                                                    <div class="flex items-center space-x-2 mb-2">
+                                                        <span class="bg-error text-white px-2 py-1 rounded text-xs font-medium">CRITICAL</span>
+                                                        <span class="text-sm text-text-secondary">2 minutes ago</span>
+                                                    </div>
+                                                    <h4 class="font-medium mb-1">Deepfake Face Detection</h4>
+                                                    <p class="text-sm text-text-secondary mb-2">
+                                                        Potential deepfake detected in face verification for application ID: KYC-2024-001234
+                                                    </p>
+                                                    <div class="flex items-center space-x-4 text-sm">
+                                                        <span>Confidence: 94.2%</span>
+                                                        <span>User: +91-9876543210</span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex space-x-2">
+                                                    <button class="bg-error text-white px-3 py-1 rounded text-sm hover:bg-red-700">Review</button>
+                                                    <button class="bg-gray-200 text-text-primary px-3 py-1 rounded text-sm hover:bg-gray-300">Dismiss</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- High Alert -->
+                                        <div class="border-l-4 border-warning bg-warning/5 p-4 rounded-r-lg" data-mock="true">
+                                            <div class="flex items-start justify-between">
+                                                <div>
+                                                    <div class="flex items-center space-x-2 mb-2">
+                                                        <span class="bg-warning text-white px-2 py-1 rounded text-xs font-medium">HIGH</span>
+                                                        <span class="text-sm text-text-secondary">15 minutes ago</span>
+                                                    </div>
+                                                    <h4 class="font-medium mb-1">Duplicate Document Detected</h4>
+                                                    <p class="text-sm text-text-secondary mb-2">
+                                                        Same Aadhaar document used across multiple applications
+                                                    </p>
+                                                    <div class="flex items-center space-x-4 text-sm">
+                                                        <span>Applications: 3</span>
+                                                        <span>Document: XXXX-XXXX-5678</span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex space-x-2">
+                                                    <button class="bg-warning text-white px-3 py-1 rounded text-sm hover:bg-yellow-600">Review</button>
+                                                    <button class="bg-gray-200 text-text-primary px-3 py-1 rounded text-sm hover:bg-gray-300">Dismiss</button>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Medium Alert -->
+                                        <div class="border-l-4 border-secondary bg-secondary/5 p-4 rounded-r-lg" data-mock="true">
+                                            <div class="flex items-start justify-between">
+                                                <div>
+                                                    <div class="flex items-center space-x-2 mb-2">
+                                                        <span class="bg-secondary text-white px-2 py-1 rounded text-xs font-medium">MEDIUM</span>
+                                                        <span class="text-sm text-text-secondary">1 hour ago</span>
+                                                    </div>
+                                                    <h4 class="font-medium mb-1">Unusual Activity Pattern</h4>
+                                                    <p class="text-sm text-text-secondary mb-2">
+                                                        Multiple activations from same IP address in short timeframe
+                                                    </p>
+                                                    <div class="flex items-center space-x-4 text-sm">
+                                                        <span>IP: 192.168.1.100</span>
+                                                        <span>Count: 8 activations</span>
+                                                    </div>
+                                                </div>
+                                                <div class="flex space-x-2">
+                                                    <button class="bg-secondary text-white px-3 py-1 rounded text-sm hover:bg-blue-600">Review</button>
+                                                    <button class="bg-gray-200 text-text-primary px-3 py-1 rounded text-sm hover:bg-gray-300">Dismiss</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Pending Approvals -->
+                                <div class="bg-white rounded-xl shadow-lg p-6">
+                                    <div class="flex items-center justify-between mb-4">
+                                        <h3 class="text-lg font-semibold">Pending Activation Approvals</h3>
+                                        <div class="flex space-x-2">
+                                            <select class="px-3 py-1 border border-gray-300 rounded text-sm">
+                                                <option>All Types</option>
+                                                <option data-mock="true">Individual</option>
+                                                <option data-mock="true">Enterprise</option>
+                                            </select>
+                                            <button class="text-text-secondary hover:text-primary">
+                                                <i class="fas fa-refresh"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full">
+                                            <thead>
+                                                <tr class="border-b border-gray-200">
+                                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Application ID</th>
+                                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Customer</th>
+                                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Type</th>
+                                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">AI Score</th>
+                                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Submitted</th>
+                                                    <th class="text-left py-3 text-sm font-medium text-text-secondary">Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- @MAP: pendingApprovals.map(approval => ( -->
+                                                <tr class="border-b border-gray-100" data-mock="true">
+                                                    <td class="py-3 text-sm font-mono">KYC-2024-001234</td>
+                                                    <td class="py-3">
+                                                        <div>
+                                                            <p class="font-medium text-sm">Anil Kumar</p>
+                                                            <p class="text-xs text-text-secondary">+91-9876543210</p>
+                                                        </div>
+                                                    </td>
+                                                    <td class="py-3">
+                                                        <span class="bg-primary/10 text-primary px-2 py-1 rounded-full text-xs">Individual</span>
+                                                    </td>
+                                                    <td class="py-3">
+                                                        <div class="flex items-center space-x-2">
+                                                            <div class="w-12 h-2 bg-gray-200 rounded-full">
+                                                                <div class="w-10 h-2 bg-success rounded-full"></div>
+                                                            </div>
+                                                            <span class="text-sm">92%</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="py-3 text-sm text-text-secondary">2 hours ago</td>
+                                                    <td class="py-3">
+                                                        <div class="flex space-x-2">
+                                                            <button class="bg-success text-white px-3 py-1 rounded text-xs hover:bg-green-700">Approve</button>
+                                                            <button class="bg-error text-white px-3 py-1 rounded text-xs hover:bg-red-700">Reject</button>
+                                                            <button class="text-text-secondary hover:text-primary">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <tr class="border-b border-gray-100" data-mock="true">
+                                                    <td class="py-3 text-sm font-mono">KYC-2024-001235</td>
+                                                    <td class="py-3">
+                                                        <div>
+                                                            <p class="font-medium text-sm">TechCorp Pvt Ltd</p>
+                                                            <p class="text-xs text-text-secondary">Bulk: 25 employees</p>
+                                                        </div>
+                                                    </td>
+                                                    <td class="py-3">
+                                                        <span class="bg-secondary/10 text-secondary px-2 py-1 rounded-full text-xs">Enterprise</span>
+                                                    </td>
+                                                    <td class="py-3">
+                                                        <div class="flex items-center space-x-2">
+                                                            <div class="w-12 h-2 bg-gray-200 rounded-full">
+                                                                <div class="w-11 h-2 bg-success rounded-full"></div>
+                                                            </div>
+                                                            <span class="text-sm">96%</span>
+                                                        </div>
+                                                    </td>
+                                                    <td class="py-3 text-sm text-text-secondary">4 hours ago</td>
+                                                    <td class="py-3">
+                                                        <div class="flex space-x-2">
+                                                            <button class="bg-success text-white px-3 py-1 rounded text-xs hover:bg-green-700">Approve</button>
+                                                            <button class="bg-error text-white px-3 py-1 rounded text-xs hover:bg-red-700">Reject</button>
+                                                            <button class="text-text-secondary hover:text-primary">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <!-- @END_MAP )) -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Sidebar -->
+                            <div class="lg:col-span-1">
+                                <!-- System Health -->
+                                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                                    <h4 class="font-semibold mb-4">System Health</h4>
+                                    <div class="space-y-4">
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm">AI Processing</span>
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-2 h-2 bg-success rounded-full"></div>
+                                                <span class="text-sm text-success">Healthy</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm">KYC Database</span>
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-2 h-2 bg-success rounded-full"></div>
+                                                <span class="text-sm text-success">Online</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm">Face Recognition</span>
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-2 h-2 bg-warning rounded-full"></div>
+                                                <span class="text-sm text-warning">Degraded</span>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span class="text-sm">Fraud Detection</span>
+                                            <div class="flex items-center space-x-2">
+                                                <div class="w-2 h-2 bg-success rounded-full"></div>
+                                                <span class="text-sm text-success">Active</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Quick Stats -->
+                                <div class="bg-white rounded-xl shadow-lg p-6 mb-6">
+                                    <h4 class="font-semibold mb-4">Today's Summary</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex justify-between text-sm">
+                                            <span>Applications Processed</span>
+                                            <span class="font-medium" data-bind="todaySummary.processed">1,247</span>
+                                        </div>
+                                        <div class="flex justify-between text-sm">
+                                            <span>Auto-Approved</span>
+                                            <span class="font-medium text-success" data-bind="todaySummary.autoApproved">1,183</span>
+                                        </div>
+                                        <div class="flex justify-between text-sm">
+                                            <span>Manual Review</span>
+                                            <span class="font-medium text-warning" data-bind="todaySummary.manualReview">43</span>
+                                        </div>
+                                        <div class="flex justify-between text-sm">
+                                            <span>Rejected</span>
+                                            <span class="font-medium text-error" data-bind="todaySummary.rejected">21</span>
+                                        </div>
+                                        <hr class="my-2">
+                                        <div class="flex justify-between text-sm font-medium">
+                                            <span>Success Rate</span>
+                                            <span class="text-success">94.9%</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- API Status -->
+                                <div class="bg-white rounded-xl shadow-lg p-6">
+                                    <h4 class="font-semibold mb-4">API Integrations</h4>
+                                    <div class="space-y-3 text-sm">
+                                        <div class="flex items-center justify-between">
+                                            <span>DigiLocker API</span>
+                                            <span class="text-success">Connected</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span>UIDAI Verification</span>
+                                            <span class="text-success">Active</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span>Face Recognition API</span>
+                                            <span class="text-warning">Limited</span>
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <span>SIM Provisioning</span>
+                                            <span class="text-success">Online</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: OperatorDashboard -->
+
+            <!-- @COMPONENT: OnboardingSuccessModal [completion confirmation] -->
+            <div id="successModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 p-8 text-center">
+                    <div class="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-check text-2xl text-success"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4">Onboarding Complete!</h3>
+                    <p class="text-text-secondary mb-6">Your SIM has been successfully activated. You'll receive a confirmation SMS shortly.</p>
+                    
+                    <div class="bg-gray-50 rounded-lg p-4 mb-6">
+                        <div class="text-left space-y-2">
+                            <div class="flex justify-between text-sm">
+                                <span>SIM Number:</span>
+                                <span class="font-medium" data-mock="true">9876543210</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Plan:</span>
+                                <span class="font-medium" data-mock="true">Premium (₹499/month)</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Activation ID:</span>
+                                <span class="font-medium font-mono" data-mock="true">ACT-2024-001234</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span>Status:</span>
+                                <span class="font-medium text-success">Active</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3">
+                        <button onclick="hideSuccessModal()" class="w-full bg-primary text-white py-3 rounded-lg hover:bg-secondary transition-colors font-medium">
+                            Download Receipt
+                        </button>
+                        <button onclick="showLandingPage(); hideSuccessModal()" class="w-full bg-gray-100 text-text-primary py-3 rounded-lg hover:bg-gray-200 transition-colors font-medium">
+                            Return to Home
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- @END_COMPONENT: OnboardingSuccessModal -->
+
+        </main>
+        <!-- @END_COMPONENT: App -->
+
+        <!-- Toast Notifications Container -->
+        <div id="toastContainer" class="fixed top-4 right-4 z-50 space-y-2">
+            <!-- Toast notifications will be dynamically added here -->
+        </div>
+
+    </div>
+
+    <script>
+        // Global state management
+        let currentStep = 'landing';
+        let currentUser = null;
+        
+        // Navigation functions
+        function showLandingPage() {
+            hideAllSections();
+            document.getElementById('landingPage').classList.remove('hidden');
+            currentStep = 'landing';
+        }
+        
+        function showCustomerPortal() {
+            hideAllSections();
+            document.getElementById('customerPortal').classList.remove('hidden');
+            showPersonalInfo();
+            currentStep = 'customer';
+        }
+        
+        function showEnterprisePortal() {
+            hideAllSections();
+            document.getElementById('enterprisePortal').classList.remove('hidden');
+            currentStep = 'enterprise';
+        }
+        
+        function showOperatorDashboard() {
+            hideAllSections();
+            document.getElementById('operatorDashboard').classList.remove('hidden');
+            currentStep = 'operator';
+        }
+        
+        function hideAllSections() {
+            document.getElementById('landingPage').classList.add('hidden');
+            document.getElementById('customerPortal').classList.add('hidden');
+            document.getElementById('enterprisePortal').classList.add('hidden');
+            document.getElementById('operatorDashboard').classList.add('hidden');
+        }
+        
+        // Customer onboarding step navigation
+        function showPersonalInfo() {
+            hideOnboardingSteps();
+            document.getElementById('personalInfoStep').classList.remove('hidden');
+            updateProgressBar(1);
+        }
+        
+        function showDocumentUpload() {
+            hideOnboardingSteps();
+            document.getElementById('documentUploadStep').classList.remove('hidden');
+            updateProgressBar(2);
+            // TODO: Implement document upload and OCR processing
+        }
+        
+        function showFaceVerification() {
+            hideOnboardingSteps();
+            document.getElementById('faceVerificationStep').classList.remove('hidden');
+            updateProgressBar(3);
+            // TODO: Implement face verification and liveness detection
+        }
+        
+        function showPlanSelection() {
+            hideOnboardingSteps();
+            document.getElementById('planSelectionStep').classList.remove('hidden');
+            updateProgressBar(4);
+            // TODO: Implement AI plan recommendation logic
+        }
+        
+        function hideOnboardingSteps() {
+            document.getElementById('personalInfoStep').classList.add('hidden');
+            document.getElementById('documentUploadStep').classList.add('hidden');
+            document.getElementById('faceVerificationStep').classList.add('hidden');
+            document.getElementById('planSelectionStep').classList.add('hidden');
+        }
+        
+        function updateProgressBar(step) {
+            // TODO: Implement visual progress bar updates
+            console.log('Progress updated to step:', step);
+        }
+        
+        // Document processing simulation
+        function selectDocumentType(type) {
+            // TODO: Implement document type selection logic
+            console.log('Document type selected:', type);
+            showToast('Document type selected: ' + type, 'success');
+        }
+        
+        // Face verification simulation  
+        function startFaceVerification() {
+            // TODO: Implement camera access and face verification
+            document.getElementById('faceVerificationStatus').classList.remove('hidden');
+            showToast('Face verification started', 'info');
+            
+            // Simulate processing
+            setTimeout(() => {
+                showToast('Face verification completed successfully!', 'success');
+            }, 3000);
+        }
+        
+        // Onboarding completion
+        function completeOnboarding() {
+            document.getElementById('successModal').classList.remove('hidden');
+            // TODO: Implement final onboarding submission
+        }
+        
+        function hideSuccessModal() {
+            document.getElementById('successModal').classList.add('hidden');
+        }
+        
+        // Enterprise portal functions
+        function showBulkUpload() {
+            document.getElementById('bulkUploadModal').classList.remove('hidden');
+        }
+        
+        function hideBulkUpload() {
+            document.getElementById('bulkUploadModal').classList.add('hidden');
+        }
+        
+        // Toast notification system
+        function showToast(message, type = 'info') {
+            const toastContainer = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            const bgColor = {
+                'success': 'bg-success',
+                'error': 'bg-error', 
+                'warning': 'bg-warning',
+                'info': 'bg-primary'
+            }[type] || 'bg-primary';
+            
+            toast.className = `${bgColor} text-white px-6 py-3 rounded-lg shadow-lg transform transition-all duration-300 translate-x-full`;
+            toast.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <span>${message}</span>
+                    <button onclick="this.parentElement.parentElement.remove()" class="ml-4 text-white hover:text-gray-200">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            `;
+            
+            toastContainer.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-x-full');
+            }, 100);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                toast.classList.add('translate-x-full');
+                setTimeout(() => {
+                    if (toast.parentElement) {
+                        toast.remove();
+                    }
+                }, 300);
+            }, 5000);
+        }
+        
+        // Initialize the application
+        (function() {
+            // Show initial landing page
+            showLandingPage();
+            
+            // Add some demo functionality
+            console.log('TeleConnect AI Platform initialized');
+            
+            // Simulate real-time updates for operator dashboard
+            if (currentStep === 'operator') {
+                // TODO: Implement real-time data updates
+                setInterval(() => {
+                    // Update stats in real-time
+                }, 30000);
+            }
+        })();
+    </script>
+
+</body>
+</html>
