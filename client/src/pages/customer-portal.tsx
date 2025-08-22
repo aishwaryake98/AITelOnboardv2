@@ -104,16 +104,6 @@ export default function CustomerPortal() {
                 </div>
               </div>
 
-              {/* Help Support */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h4 className="font-semibold mb-4">Need Help?</h4>
-                <p className="text-sm text-gray-600 mb-4">
-                  Our AI assistant is here to help you with the onboarding process.
-                </p>
-                <button className="w-full bg-primary text-white py-2 rounded-lg text-sm hover:bg-secondary transition-colors">
-                  Chat Support
-                </button>
-              </div>
             </div>
           </div>
         </div>

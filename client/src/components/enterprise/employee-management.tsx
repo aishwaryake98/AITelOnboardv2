@@ -8,11 +8,16 @@ import { Badge } from "@/components/ui/badge";
 import { Upload, Plus, BarChart3, Settings, Filter, Download, MoreVertical, Users, TrendingUp, CreditCard } from "lucide-react";
 import BulkUploadModal from "./bulk-upload-modal";
 import AddEmployeeModal from "./add-employee-modal";
+import UsageAnalyticsModal from "./usage-analytics-modal";
+import BillingSettingsModal from "./billing-settings-modal";
+import EmployeeActionsDropdown from "./employee-actions-dropdown";
 import { useToast } from "@/hooks/use-toast";
 
 export default function EmployeeManagement() {
   const [showBulkUpload, setShowBulkUpload] = useState(false);
   const [showAddEmployee, setShowAddEmployee] = useState(false);
+  const [showUsageAnalytics, setShowUsageAnalytics] = useState(false);
+  const [showBillingSettings, setShowBillingSettings] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [filteredEmployees, setFilteredEmployees] = useState<any[]>([]);
@@ -35,13 +40,13 @@ export default function EmployeeManagement() {
       icon: BarChart3,
       title: "Usage Analytics",
       description: "View detailed usage reports",
-      onClick: () => alert('Usage Analytics - Detailed data usage and performance analytics dashboard would open here')
+      onClick: () => setShowUsageAnalytics(true)
     },
     {
       icon: Settings,
       title: "Billing Settings",
       description: "Manage plans and billing",
-      onClick: () => alert('Billing Settings - Plan management and billing configuration would open here')
+      onClick: () => setShowBillingSettings(true)
     }
   ];
 
@@ -53,7 +58,7 @@ export default function EmployeeManagement() {
 
   // Filter employees based on search and status
   useEffect(() => {
-    let filtered = employees;
+    let filtered: any[] = employees || [];
     
     if (searchTerm) {
       filtered = filtered.filter((emp: any) => 
@@ -257,9 +262,7 @@ export default function EmployeeManagement() {
                         </td>
                         <td className="py-3 text-sm">{employee.usage || '-'}</td>
                         <td className="py-3">
-                          <Button variant="ghost" size="sm">
-                            <MoreVertical className="w-4 h-4" />
-                          </Button>
+                          <EmployeeActionsDropdown employee={employee} />
                         </td>
                       </tr>
                     ))
@@ -295,23 +298,6 @@ export default function EmployeeManagement() {
           </CardContent>
         </Card>
 
-        {/* Support */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg">Enterprise Support</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-sm text-gray-500 mb-4">Get dedicated support for your enterprise needs.</p>
-            <div className="space-y-2">
-              <Button className="w-full" size="sm">
-                Contact Support
-              </Button>
-              <Button variant="outline" className="w-full" size="sm">
-                Documentation
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
       </div>
 
       {/* Modals */}
@@ -322,6 +308,16 @@ export default function EmployeeManagement() {
       <AddEmployeeModal 
         isOpen={showAddEmployee} 
         onClose={() => setShowAddEmployee(false)} 
+      />
+      
+      <UsageAnalyticsModal 
+        isOpen={showUsageAnalytics} 
+        onClose={() => setShowUsageAnalytics(false)} 
+      />
+      
+      <BillingSettingsModal 
+        isOpen={showBillingSettings} 
+        onClose={() => setShowBillingSettings(false)} 
       />
     </div>
   );
