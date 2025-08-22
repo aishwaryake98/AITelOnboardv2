@@ -34,6 +34,7 @@ export interface IStorage {
   // SIM Activations
   createSimActivation(activation: InsertSimActivation): Promise<SimActivation>;
   getSimActivationsByUserId(userId: string): Promise<SimActivation[]>;
+  getSimActivationByCode(activationCode: string): Promise<SimActivation | undefined>;
   updateSimActivation(id: string, updates: Partial<SimActivation>): Promise<SimActivation | undefined>;
   
   // Plans
@@ -216,6 +217,10 @@ export class MemStorage implements IStorage {
 
   async getSimActivationsByUserId(userId: string): Promise<SimActivation[]> {
     return Array.from(this.simActivations.values()).filter(sa => sa.userId === userId);
+  }
+
+  async getSimActivationByCode(activationCode: string): Promise<SimActivation | undefined> {
+    return Array.from(this.simActivations.values()).find(sa => sa.activationId === activationCode);
   }
 
   async updateSimActivation(id: string, updates: Partial<SimActivation>): Promise<SimActivation | undefined> {

@@ -3,8 +3,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Upload, FileText, X } from "lucide-react";
+import { Upload, FileText, X, CheckCircle, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { uploadService } from "@/services/upload-service";
 
 interface BulkUploadModalProps {
   onClose: () => void;
@@ -13,7 +15,9 @@ interface BulkUploadModalProps {
 export default function BulkUploadModal({ onClose }: BulkUploadModalProps) {
   const [currentStep, setCurrentStep] = useState(1);
   const [csvFile, setCsvFile] = useState<File | null>(null);
+  const [uploadResults, setUploadResults] = useState<any>(null);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -26,14 +30,45 @@ export default function BulkUploadModal({ onClose }: BulkUploadModalProps) {
     }
   };
 
-  const handleContinue = () => {
-    if (csvFile) {
-      // Simulate upload process
-      toast({
-        title: "Upload Started",
-        description: "Processing CSV file...",
-      });
+  const bulkUploadMutation = useMutation({
+    mutationFn: async (file: File) => {
+      const formData = new FormData();
+      formData.append('csvFile', file);
+      formData.append('enterpriseId', 'techcorp-enterprise');
+      return uploadService.uploadBulkCSV(formData);
+    },
+    onSuccess: (result) => {
+      setUploadResults(result);
       setCurrentStep(2);
+      toast({
+        title: "Upload Successful",
+        description: `Successfully processed ${result.employeeCount} employees`,
+      });
+      // Refresh employee list
+      queryClient.invalidateQueries({ queryKey: ["/api/enterprise/employees"] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Upload Failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    },
+  });
+
+  const handleContinue = () => {
+    if (csvFile && currentStep === 1) {
+      bulkUploadMutation.mutate(csvFile);
+    } else if (currentStep === 2) {
+      setCurrentStep(3);
+      // Simulate document processing
+      setTimeout(() => {
+        toast({
+          title: "Processing Complete",
+          description: "All employee documents have been processed"
+        });
+        onClose();
+      }, 3000);
     }
   };
 
@@ -111,24 +146,44 @@ export default function BulkUploadModal({ onClose }: BulkUploadModalProps) {
           </>
         )}
 
-        {currentStep === 2 && (
+        {currentStep === 2 && uploadResults && (
           <div>
             <h4 className="font-medium mb-4">CSV Processing Complete</h4>
             <p className="text-sm text-gray-600 mb-4">
-              Found 25 employees in the CSV. Now upload the required documents for each employee.
+              Successfully processed {uploadResults.employeeCount} employees from the CSV.
             </p>
+            
+            <Alert className="mb-6 border-green-200 bg-green-50">
+              <CheckCircle className="w-4 h-4 text-green-600" />
+              <AlertDescription>
+                <h5 className="font-medium mb-2 text-green-800">Upload Summary:</h5>
+                <div className="text-sm space-y-1 text-green-700">
+                  <div>• {uploadResults.employeeCount} employees added to the system</div>
+                  <div>• KYC status set to 'pending' for all employees</div>
+                  <div>• Email notifications sent to employees</div>
+                </div>
+              </AlertDescription>
+            </Alert>
             
             <Alert className="mb-6">
               <AlertDescription>
-                <h5 className="font-medium mb-2">Required Documents for Each Employee:</h5>
+                <h5 className="font-medium mb-2">Next Steps:</h5>
                 <ul className="text-sm space-y-1">
-                  <li>• Aadhaar Card (front and back)</li>
-                  <li>• PAN Card</li>
-                  <li>• Passport size photograph</li>
-                  <li>• Address proof (if different from Aadhaar)</li>
+                  <li>• Employees will receive KYC completion instructions via email</li>
+                  <li>• Documents will be processed automatically using AI</li>
+                  <li>• SIM activation will begin once KYC is approved</li>
+                  <li>• You can track progress in the Employee Management dashboard</li>
                 </ul>
               </AlertDescription>
             </Alert>
+          </div>
+        )}
+        
+        {currentStep === 3 && (
+          <div className="text-center py-8">
+            <Loader2 className="w-12 h-12 animate-spin text-primary mx-auto mb-4" />
+            <h4 className="font-medium mb-2">Processing Employee Documents</h4>
+            <p className="text-sm text-gray-600">AI is analyzing and verifying uploaded documents...</p>
           </div>
         )}
 
@@ -151,8 +206,17 @@ export default function BulkUploadModal({ onClose }: BulkUploadModalProps) {
           <Button onClick={onClose} variant="outline" className="flex-1">
             Cancel
           </Button>
-          <Button onClick={handleContinue} className="flex-1" disabled={!csvFile && currentStep === 1}>
-            {currentStep === 1 ? 'Continue' : 'Process Documents'}
+          <Button 
+            onClick={handleContinue} 
+            className="flex-1" 
+            disabled={(!csvFile && currentStep === 1) || bulkUploadMutation.isPending}
+          >
+            {bulkUploadMutation.isPending ? (
+              <>
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                Processing...
+              </>
+            ) : currentStep === 1 ? 'Upload CSV' : currentStep === 2 ? 'Start Document Processing' : 'Complete'}
           </Button>
         </div>
       </DialogContent>

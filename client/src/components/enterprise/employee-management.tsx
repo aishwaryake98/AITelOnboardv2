@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -6,9 +7,16 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Upload, Plus, BarChart3, Settings, Filter, Download, MoreVertical, Users, TrendingUp, CreditCard } from "lucide-react";
 import BulkUploadModal from "./bulk-upload-modal";
+import AddEmployeeModal from "./add-employee-modal";
+import { useToast } from "@/hooks/use-toast";
 
 export default function EmployeeManagement() {
   const [showBulkUpload, setShowBulkUpload] = useState(false);
+  const [showAddEmployee, setShowAddEmployee] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("all");
+  const [filteredEmployees, setFilteredEmployees] = useState<any[]>([]);
+  const { toast } = useToast();
 
   const quickActions = [
     {
@@ -21,7 +29,7 @@ export default function EmployeeManagement() {
       icon: Plus,
       title: "Add Employee",
       description: "Individual SIM activation",
-      onClick: () => alert('Add Employee functionality - Individual employee onboarding form would open here')
+      onClick: () => setShowAddEmployee(true)
     },
     {
       icon: BarChart3,
@@ -37,26 +45,74 @@ export default function EmployeeManagement() {
     }
   ];
 
-  const employees = [
-    {
-      name: "Rahul Sharma",
-      email: "rahul@techcorp.com",
-      simNumber: "9876543210",
-      plan: "Premium",
-      status: "Active",
-      usage: "4.2GB",
-      avatar: "R"
-    },
-    {
-      name: "Priya Singh",
-      email: "priya@techcorp.com", 
-      simNumber: "9876543211",
-      plan: "Basic",
-      status: "Pending",
-      usage: "-",
-      avatar: "P"
+  // Fetch employees from API
+  const { data: employees = [], isLoading, error } = useQuery({
+    queryKey: ["/api/enterprise/employees"],
+    refetchInterval: 30000, // Refresh every 30 seconds
+  });
+
+  // Filter employees based on search and status
+  useEffect(() => {
+    let filtered = employees;
+    
+    if (searchTerm) {
+      filtered = filtered.filter((emp: any) => 
+        emp.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        emp.email?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     }
-  ];
+    
+    if (statusFilter !== "all") {
+      filtered = filtered.filter((emp: any) => 
+        emp.status?.toLowerCase() === statusFilter.toLowerCase()
+      );
+    }
+    
+    setFilteredEmployees(filtered);
+  }, [employees, searchTerm, statusFilter]);
+
+  const handleDownload = () => {
+    try {
+      // Create CSV content
+      const csvHeaders = ['Name', 'Email', 'Phone', 'Department', 'Status', 'SIM Number', 'Plan', 'Usage'];
+      const csvRows = filteredEmployees.map((emp: any) => [
+        emp.name || '',
+        emp.email || '',
+        emp.phone || '',
+        emp.department || '',
+        emp.status || '',
+        emp.simNumber || '',
+        emp.plan || '',
+        emp.usage || ''
+      ]);
+      
+      const csvContent = [csvHeaders, ...csvRows]
+        .map(row => row.map(field => `"${field}"`).join(','))
+        .join('\n');
+      
+      // Create and download file
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', `employees_${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = 'hidden';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast({
+        title: "Download Complete",
+        description: "Employee data has been downloaded as CSV"
+      });
+    } catch (error) {
+      toast({
+        title: "Download Failed",
+        description: "Failed to download employee data",
+        variant: "destructive"
+      });
+    }
+  };
 
   const recentActivities = [
     {
@@ -113,10 +169,10 @@ export default function EmployeeManagement() {
             <div className="flex items-center justify-between">
               <CardTitle className="text-lg">Employee SIM Management</CardTitle>
               <div className="flex space-x-2">
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" onClick={() => setStatusFilter(statusFilter === "all" ? "active" : "all")}>
                   <Filter className="w-4 h-4" />
                 </Button>
-                <Button variant="ghost" size="sm">
+                <Button variant="ghost" size="sm" onClick={handleDownload}>
                   <Download className="w-4 h-4" />
                 </Button>
               </div>
@@ -126,9 +182,13 @@ export default function EmployeeManagement() {
             {/* Search and Filters */}
             <div className="flex space-x-4 mb-4">
               <div className="flex-1">
-                <Input placeholder="Search employees..." />
+                <Input 
+                  placeholder="Search employees..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
               </div>
-              <Select>
+              <Select value={statusFilter} onValueChange={setStatusFilter}>
                 <SelectTrigger className="w-32">
                   <SelectValue placeholder="All Status" />
                 </SelectTrigger>
@@ -155,41 +215,55 @@ export default function EmployeeManagement() {
                   </tr>
                 </thead>
                 <tbody>
-                  {employees.map((employee, index) => (
-                    <tr key={index} className="border-b border-gray-100">
-                      <td className="py-3">
-                        <div className="flex items-center space-x-3">
-                          <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm">
-                            {employee.avatar}
-                          </div>
-                          <div>
-                            <p className="font-medium">{employee.name}</p>
-                            <p className="text-sm text-gray-500">{employee.email}</p>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="py-3 text-sm">{employee.simNumber}</td>
-                      <td className="py-3 text-sm">{employee.plan}</td>
-                      <td className="py-3">
-                        <Badge
-                          variant={employee.status === "Active" ? "default" : "secondary"}
-                          className={
-                            employee.status === "Active" 
-                              ? "bg-success/10 text-success" 
-                              : "bg-warning/10 text-warning"
-                          }
-                        >
-                          {employee.status}
-                        </Badge>
-                      </td>
-                      <td className="py-3 text-sm">{employee.usage}</td>
-                      <td className="py-3">
-                        <Button variant="ghost" size="sm">
-                          <MoreVertical className="w-4 h-4" />
-                        </Button>
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan={6} className="py-8 text-center text-gray-500">
+                        Loading employees...
                       </td>
                     </tr>
-                  ))}
+                  ) : filteredEmployees.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="py-8 text-center text-gray-500">
+                        {searchTerm || statusFilter !== "all" ? "No employees match your filters" : "No employees found"}
+                      </td>
+                    </tr>
+                  ) : (
+                    filteredEmployees.map((employee: any, index: number) => (
+                      <tr key={employee.id || index} className="border-b border-gray-100">
+                        <td className="py-3">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm">
+                              {employee.name?.charAt(0) || 'E'}
+                            </div>
+                            <div>
+                              <p className="font-medium">{employee.name}</p>
+                              <p className="text-sm text-gray-500">{employee.email}</p>
+                            </div>
+                          </div>
+                        </td>
+                        <td className="py-3 text-sm">{employee.simNumber || 'Not assigned'}</td>
+                        <td className="py-3 text-sm">{employee.plan || 'No plan'}</td>
+                        <td className="py-3">
+                          <Badge
+                            variant={employee.status === "active" ? "default" : "secondary"}
+                            className={
+                              employee.status === "active" 
+                                ? "bg-success/10 text-success" 
+                                : "bg-warning/10 text-warning"
+                            }
+                          >
+                            {employee.status || 'pending'}
+                          </Badge>
+                        </td>
+                        <td className="py-3 text-sm">{employee.usage || '-'}</td>
+                        <td className="py-3">
+                          <Button variant="ghost" size="sm">
+                            <MoreVertical className="w-4 h-4" />
+                          </Button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -240,10 +314,15 @@ export default function EmployeeManagement() {
         </Card>
       </div>
 
-      {/* Bulk Upload Modal */}
+      {/* Modals */}
       {showBulkUpload && (
         <BulkUploadModal onClose={() => setShowBulkUpload(false)} />
       )}
+      
+      <AddEmployeeModal 
+        isOpen={showAddEmployee} 
+        onClose={() => setShowAddEmployee(false)} 
+      />
     </div>
   );
 }

@@ -3,8 +3,10 @@ import { useMutation } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Camera, CheckCircle, Loader2, Eye } from "lucide-react";
-import { aiService } from "@/services/ai-service";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Upload, CheckCircle, Loader2, User } from "lucide-react";
+import { uploadService } from "@/services/upload-service";
 import { useToast } from "@/hooks/use-toast";
 
 interface FaceVerificationProps {
@@ -17,11 +19,20 @@ interface FaceVerificationProps {
 export default function FaceVerification({ onComplete, onBack, canGoBack, data }: FaceVerificationProps) {
   const [verificationStatus, setVerificationStatus] = useState<string>("");
   const [isVerified, setIsVerified] = useState(false);
+  const [uploadedPhoto, setUploadedPhoto] = useState<File | null>(null);
+  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const { toast } = useToast();
 
   const verificationMutation = useMutation({
-    mutationFn: async (userId: string) => {
-      return aiService.performFaceVerification(userId);
+    mutationFn: async (formData: FormData) => {
+      const response = await fetch('/api/face-verification', {
+        method: 'POST',
+        body: formData
+      });
+      if (!response.ok) {
+        throw new Error('Face verification failed');
+      }
+      return response.json();
     },
     onSuccess: (result) => {
       setVerificationStatus(result.verificationStatus);
@@ -29,8 +40,8 @@ export default function FaceVerification({ onComplete, onBack, canGoBack, data }
       toast({
         title: result.verificationStatus === "verified" ? "Verification Successful" : "Verification Failed",
         description: result.verificationStatus === "verified" 
-          ? `Liveness confirmed • Face match: ${(result.matchScore * 100).toFixed(1)}%`
-          : "Please try again or contact support",
+          ? `Face match: ${(result.matchScore * 100).toFixed(1)}%`
+          : "Please try again with a clearer photo",
         variant: result.verificationStatus === "verified" ? "default" : "destructive"
       });
     },
@@ -43,9 +54,36 @@ export default function FaceVerification({ onComplete, onBack, canGoBack, data }
     },
   });
 
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setUploadedPhoto(file);
+      
+      // Create preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPhotoPreview(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleStartVerification = () => {
-    // In a real app, this would access the camera
-    verificationMutation.mutate('temp-user-id'); // Replace with actual user ID
+    if (!uploadedPhoto) {
+      toast({
+        title: "No Photo Selected",
+        description: "Please upload your photo first",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('photo', uploadedPhoto);
+    formData.append('userId', 'temp-user-id'); // Replace with actual user ID
+    formData.append('documentPhoto', data?.extractedData?.documentPhoto || 'extracted-from-document');
+    
+    verificationMutation.mutate(formData);
   };
 
   const handleContinue = () => {
@@ -62,51 +100,76 @@ export default function FaceVerification({ onComplete, onBack, canGoBack, data }
       </CardHeader>
       <CardContent>
         <div className="text-center mb-6">
-          <div className="w-32 h-32 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center">
-            <Camera className="w-12 h-12 text-gray-400" />
+          <div className="w-32 h-32 bg-gray-100 rounded-full mx-auto mb-4 flex items-center justify-center overflow-hidden">
+            {photoPreview ? (
+              <img src={photoPreview} alt="Preview" className="w-full h-full object-cover" />
+            ) : (
+              <User className="w-12 h-12 text-gray-400" />
+            )}
           </div>
-          <h4 className="text-lg font-medium mb-2">Position your face in the camera</h4>
-          <p className="text-gray-500">Look directly at the camera and follow the instructions</p>
+          <h4 className="text-lg font-medium mb-2">Upload Your Photo</h4>
+          <p className="text-gray-500">Upload a clear photo of your face for verification</p>
         </div>
 
         {/* Face Verification Instructions */}
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-          <h5 className="font-medium mb-2">Verification Steps:</h5>
+          <h5 className="font-medium mb-2">Photo Guidelines:</h5>
           <ul className="text-sm space-y-1">
+            <li className="flex items-center">
+              <CheckCircle className="w-4 h-4 text-success mr-2" />
+              Face should be clearly visible and well-lit
+            </li>
             <li className="flex items-center">
               <CheckCircle className="w-4 h-4 text-success mr-2" />
               Look directly at the camera
             </li>
             <li className="flex items-center">
-              <div className="w-4 h-4 rounded-full bg-gray-300 mr-2" />
-              Blink when prompted for liveness detection
-            </li>
-            <li className="flex items-center">
-              <div className="w-4 h-4 rounded-full bg-gray-300 mr-2" />
-              Turn head left and right
+              <CheckCircle className="w-4 h-4 text-success mr-2" />
+              Remove sunglasses, hat, or face covering
             </li>
           </ul>
         </div>
 
-        {/* Camera Interface */}
-        <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center mb-6">
-          <div className="w-48 h-36 bg-gray-200 rounded-lg mx-auto mb-4 flex items-center justify-center">
-            <Eye className="w-8 h-8 text-gray-400" />
+        {/* Photo Upload Interface */}
+        <div className="mb-6">
+          <Label htmlFor="photo-upload" className="block text-sm font-medium mb-2">
+            Upload Your Photo
+          </Label>
+          <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+            <Input
+              id="photo-upload"
+              type="file"
+              accept="image/*"
+              onChange={handleFileSelect}
+              className="hidden"
+              disabled={verificationMutation.isPending}
+            />
+            <label htmlFor="photo-upload" className="cursor-pointer block">
+              <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
+              <p className="text-sm text-gray-600 mb-1">Click to upload your photo</p>
+              <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
+            </label>
           </div>
-          <Button
-            onClick={handleStartVerification}
-            disabled={verificationMutation.isPending}
-          >
-            {verificationMutation.isPending ? (
-              <>
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                Verifying...
-              </>
-            ) : (
-              "Start Camera"
-            )}
-          </Button>
         </div>
+
+        {uploadedPhoto && (
+          <div className="mb-6">
+            <Button
+              onClick={handleStartVerification}
+              disabled={verificationMutation.isPending}
+              className="w-full"
+            >
+              {verificationMutation.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Verifying Face...
+                </>
+              ) : (
+                "Verify Face"
+              )}
+            </Button>
+          </div>
+        )}
 
         {/* AI Verification Status */}
         {isVerified && (
@@ -115,7 +178,7 @@ export default function FaceVerification({ onComplete, onBack, canGoBack, data }
             <AlertDescription>
               <span className="font-medium text-success">Face Verification Successful</span>
               <br />
-              <span className="text-sm text-gray-500">Liveness confirmed • Face match: 98.5%</span>
+              <span className="text-sm text-gray-500">Face matches document photo</span>
             </AlertDescription>
           </Alert>
         )}

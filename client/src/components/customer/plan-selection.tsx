@@ -4,7 +4,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Check, Brain, CreditCard, Smartphone, Wifi, Loader2 } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Check, Brain, CreditCard, Smartphone, Wifi, Loader2, QrCode } from "lucide-react";
 import { Plan } from "@shared/schema";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
@@ -19,7 +21,9 @@ interface PlanSelectionProps {
 export default function PlanSelection({ onComplete, onBack, canGoBack, data }: PlanSelectionProps) {
   const [selectedPlan, setSelectedPlan] = useState<string>("");
   const [selectedSimType, setSelectedSimType] = useState<string>("");
+  const [homeAddress, setHomeAddress] = useState<string>("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [esimData, setEsimData] = useState<any>(null);
   const { toast } = useToast();
 
   const { data: planData, isLoading } = useQuery({
@@ -28,14 +32,24 @@ export default function PlanSelection({ onComplete, onBack, canGoBack, data }: P
 
   const activationMutation = useMutation({
     mutationFn: async (activationData: any) => {
-      const response = await apiRequest("POST", "/api/sim-activation", activationData);
-      return response.json();
+      if (selectedSimType === 'esim') {
+        const response = await apiRequest("POST", "/api/generate-esim", activationData);
+        return response.json();
+      } else {
+        const response = await apiRequest("POST", "/api/sim-activation", activationData);
+        return response.json();
+      }
     },
-    onSuccess: () => {
+    onSuccess: (result) => {
+      if (selectedSimType === 'esim') {
+        setEsimData(result);
+      }
       setShowSuccess(true);
       toast({
         title: "Onboarding Complete!",
-        description: "Your SIM has been successfully activated",
+        description: selectedSimType === 'esim' 
+          ? "Your eSIM QR code has been generated" 
+          : "Your SIM has been successfully activated",
       });
     },
     onError: (error) => {
@@ -56,13 +70,28 @@ export default function PlanSelection({ onComplete, onBack, canGoBack, data }: P
   };
 
   const handleCompleteOnboarding = () => {
-    if (!selectedPlan || !selectedSimType) return;
+    if (!selectedPlan || !selectedSimType) {
+      toast({
+        title: "Missing Information",
+        description: "Please select a plan and SIM type",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if ((selectedSimType === 'physical' || selectedSimType === 'dongle') && !homeAddress.trim()) {
+      toast({
+        title: "Address Required",
+        description: "Please provide your home address for delivery",
+        variant: "destructive"
+      });
+      return;
+    }
 
     const activationData = {
       userId: 'temp-user-id', // Replace with actual user ID
-      simNumber: '9876543210', // Generate or assign
-      simType: selectedSimType,
       planId: selectedPlan,
+      homeAddress: homeAddress.trim() || undefined,
     };
 
     activationMutation.mutate(activationData);
@@ -91,19 +120,61 @@ export default function PlanSelection({ onComplete, onBack, canGoBack, data }: P
           <h3 className="text-2xl font-bold mb-4">Onboarding Complete!</h3>
           <p className="text-gray-500 mb-6">Your SIM has been successfully activated. You'll receive a confirmation SMS shortly.</p>
           
+          {/* eSIM QR Code Display */}
+          {esimData && selectedSimType === 'esim' && (
+            <div className="mb-6">
+              <div className="text-center mb-4">
+                <div className="inline-block p-4 bg-white border-2 border-gray-200 rounded-lg">
+                  <img 
+                    src={esimData.qrCode} 
+                    alt="eSIM QR Code" 
+                    className="w-48 h-48 mx-auto"
+                  />
+                </div>
+              </div>
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                <div className="flex items-center mb-2">
+                  <QrCode className="w-4 h-4 text-blue-600 mr-2" />
+                  <span className="font-medium text-blue-800">eSIM Activation Instructions</span>
+                </div>
+                <p className="text-sm text-blue-700 mb-2">
+                  {esimData.instructions}
+                </p>
+                <div className="text-xs text-blue-600">
+                  <strong>Activation Code:</strong> {esimData.activationCode}
+                </div>
+              </div>
+            </div>
+          )}
+
           <div className="bg-gray-50 rounded-lg p-4 mb-6">
             <div className="text-left space-y-2">
-              <div className="flex justify-between text-sm">
-                <span>SIM Number:</span>
-                <span className="font-medium">9876543210</span>
-              </div>
+              {selectedSimType === 'esim' && esimData ? (
+                <>
+                  <div className="flex justify-between text-sm">
+                    <span>Activation Code:</span>
+                    <span className="font-medium font-mono">{esimData.activationCode}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Type:</span>
+                    <span className="font-medium">eSIM</span>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex justify-between text-sm">
+                    <span>SIM Number:</span>
+                    <span className="font-medium">Will be assigned</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span>Type:</span>
+                    <span className="font-medium capitalize">{selectedSimType}</span>
+                  </div>
+                </>
+              )}
               <div className="flex justify-between text-sm">
                 <span>Plan:</span>
-                <span className="font-medium">Premium (₹499/month)</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span>Activation ID:</span>
-                <span className="font-medium font-mono">ACT-2024-001234</span>
+                <span className="font-medium">{plans.find((p: any) => p.id === selectedPlan)?.name || 'Selected Plan'}</span>
               </div>
               <div className="flex justify-between text-sm">
                 <span>Status:</span>
@@ -225,6 +296,26 @@ export default function PlanSelection({ onComplete, onBack, canGoBack, data }: P
           </div>
         </div>
 
+        {/* Home Address for Physical SIM/Dongle */}
+        {(selectedSimType === 'physical' || selectedSimType === 'dongle') && (
+          <div className="mb-6">
+            <Label htmlFor="home-address" className="block text-sm font-medium mb-2">
+              Home Address *
+            </Label>
+            <Textarea
+              id="home-address"
+              placeholder="Enter your complete home address for delivery"
+              value={homeAddress}
+              onChange={(e) => setHomeAddress(e.target.value)}
+              rows={3}
+              className="w-full"
+            />
+            <p className="text-xs text-gray-500 mt-1">
+              This address will be used for {selectedSimType} delivery
+            </p>
+          </div>
+        )}
+
         <div className="flex space-x-4">
           {canGoBack && (
             <Button onClick={onBack} variant="outline" className="flex-1">
@@ -234,7 +325,7 @@ export default function PlanSelection({ onComplete, onBack, canGoBack, data }: P
           <Button 
             onClick={handleCompleteOnboarding} 
             className="flex-1 bg-success hover:bg-success/90"
-            disabled={!selectedPlan || !selectedSimType || activationMutation.isPending}
+            disabled={!selectedPlan || !selectedSimType || ((selectedSimType === 'physical' || selectedSimType === 'dongle') && !homeAddress.trim()) || activationMutation.isPending}
           >
             {activationMutation.isPending ? (
               <>
