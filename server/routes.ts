@@ -247,8 +247,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const qrCodeDataURL = await QRCode.toDataURL(qrCodeData, {
         errorCorrectionLevel: 'M',
-        type: 'image/png',
-        quality: 0.92,
         margin: 1,
         color: {
           dark: '#000000',
@@ -516,7 +514,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 }
 
 // Initialize Google Gemini Vision API
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY!);
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 // Enhanced OCR processing using Google Gemini Vision API
 async function processDocumentWithGeminiVision(file: Express.Multer.File, documentType: string) {
