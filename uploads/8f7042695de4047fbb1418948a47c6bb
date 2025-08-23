@@ -1,0 +1,6 @@
+customerId,fullName,dateOfBirth,panNumber,aadhaarNumber,documentPhotoPath,selfiePhotoPath
+1001,Rahul Sharma,1974-11-23,ABCDE1234F,123412341234,uploads/docs/rahul_pan.jpg,uploads/selfies/rahul_selfie.jpg
+1002,Pooja Verma,1985-05-15,XYZAB6789P,567856785678,uploads/docs/pooja_aadhaar.jpg,uploads/selfies/pooja_selfie.jpg
+1003,Amit Kumar,1990-02-01,LMNOP3456Q,999988887777,uploads/docs/amit_pan.jpg,uploads/selfies/amit_selfie.jpg
+1004,Neha Singh,1992-08-19,GHJKL9876Z,888877776666,uploads/docs/neha_pan.jpg,uploads/selfies/neha_selfie.jpg
+1005,Vikram Patel,1988-12-05,RTYUI5432X,111122223333,uploads/docs/vikram_aadhaar.jpg,uploads/selfies/vikram_selfie.jpg

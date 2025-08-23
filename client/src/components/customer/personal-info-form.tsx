@@ -1,17 +1,32 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const personalInfoSchema = z.object({
   fullName: z.string().min(2, "Full name must be at least 2 characters"),
   countryCode: z.string().min(1, "Country code is required"),
-  mobile: z.string().regex(/^[1-9][\d]{9}$/, "Please enter a valid 10-digit mobile number"),
+  mobile: z
+    .string()
+    .regex(/^[1-9][\d]{9}$/, "Please enter a valid 10-digit mobile number"),
   email: z.string().email("Please enter a valid email address"),
   dateOfBirth: z.string().min(1, "Date of birth is required"),
   address: z.string().min(10, "Address must be at least 10 characters"),
@@ -27,7 +42,38 @@ interface PersonalInfoFormProps {
   data: any;
 }
 
-export default function PersonalInfoForm({ onComplete, data }: PersonalInfoFormProps) {
+// ✅ Helper function for normalizing OCR date formats into yyyy-MM-dd
+function normalizeDate(ocrDate: string | undefined): string {
+  if (!ocrDate) return "";
+
+  // Matches dd/mm/yyyy or dd-mm-yyyy
+  const match = ocrDate.match(/^(\d{2})[\/-](\d{2})[\/-](\d{4})$/);
+  if (match) {
+    const [_, dd, mm, yyyy] = match;
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  // Already in yyyy-MM-dd
+  const isoMatch = ocrDate.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (isoMatch) return ocrDate;
+
+  // Matches textual formats like "23 Nov 1974"
+  const textMatch = Date.parse(ocrDate);
+  if (!isNaN(textMatch)) {
+    const d = new Date(textMatch);
+    const yyyy = d.getFullYear();
+    const mm = String(d.getMonth() + 1).padStart(2, "0");
+    const dd = String(d.getDate()).padStart(2, "0");
+    return `${yyyy}-${mm}-${dd}`;
+  }
+
+  return ""; // fallback
+}
+
+export default function PersonalInfoForm({
+  onComplete,
+  data,
+}: PersonalInfoFormProps) {
   // Auto-fill form with data from document upload if available
   const autoFillData = data?.autoFillData || {};
   const form = useForm<PersonalInfoData>({
@@ -35,9 +81,10 @@ export default function PersonalInfoForm({ onComplete, data }: PersonalInfoFormP
     defaultValues: {
       fullName: autoFillData.fullName || data.fullName || "",
       countryCode: "+91",
-      mobile: autoFillData.mobile?.replace("+91", "").trim() || data.mobile || "",
+      mobile:
+        autoFillData.mobile?.replace("+91", "").trim() || data.mobile || "",
       email: autoFillData.email || data.email || "",
-      dateOfBirth: autoFillData.dateOfBirth || data.dateOfBirth || "",
+      dateOfBirth: normalizeDate(autoFillData.dateOfBirth || data.dateOfBirth), // ✅ Normalize here
       address: autoFillData.address || data.address || "",
       city: autoFillData.city || data.city || "",
       state: autoFillData.state || data.state || "",
@@ -93,7 +140,10 @@ export default function PersonalInfoForm({ onComplete, data }: PersonalInfoFormP
                           control={form.control}
                           name="countryCode"
                           render={({ field: countryField }) => (
-                            <Select value={countryField.value} onValueChange={countryField.onChange}>
+                            <Select
+                              value={countryField.value}
+                              onValueChange={countryField.onChange}
+                            >
                               <SelectTrigger className="w-20">
                                 <SelectValue />
                               </SelectTrigger>
@@ -107,8 +157,8 @@ export default function PersonalInfoForm({ onComplete, data }: PersonalInfoFormP
                             </Select>
                           )}
                         />
-                        <Input 
-                          placeholder="Enter 10-digit mobile number" 
+                        <Input
+                          placeholder="Enter 10-digit mobile number"
                           className="ml-2 flex-1"
                           {...field}
                         />
@@ -128,7 +178,11 @@ export default function PersonalInfoForm({ onComplete, data }: PersonalInfoFormP
                   <FormItem>
                     <FormLabel>Email Address *</FormLabel>
                     <FormControl>
-                      <Input type="email" placeholder="your.email@example.com" {...field} />
+                      <Input
+                        type="email"
+                        placeholder="your.email@example.com"
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -141,7 +195,11 @@ export default function PersonalInfoForm({ onComplete, data }: PersonalInfoFormP
                   <FormItem>
                     <FormLabel>Date of Birth *</FormLabel>
                     <FormControl>
-                      <Input type="date" {...field} />
+                      <Input
+                        type="date"
+                        value={normalizeDate(field.value)} // ✅ Normalize before rendering
+                        onChange={(e) => field.onChange(e.target.value)}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -156,7 +214,11 @@ export default function PersonalInfoForm({ onComplete, data }: PersonalInfoFormP
                 <FormItem>
                   <FormLabel>Address *</FormLabel>
                   <FormControl>
-                    <Textarea rows={3} placeholder="Enter your complete address" {...field} />
+                    <Textarea
+                      rows={3}
+                      placeholder="Enter your complete address"
+                      {...field}
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
