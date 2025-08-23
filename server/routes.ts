@@ -620,7 +620,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 }
 
 // Initialize Google Gemini Vision API
-const genAI = new GoogleGenerativeAI("");
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 // Enhanced OCR processing using Google Gemini Vision API
 async function processDocumentWithGeminiVision(
