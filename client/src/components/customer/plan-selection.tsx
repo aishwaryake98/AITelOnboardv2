@@ -51,6 +51,13 @@ export default function PlanSelection({ onComplete, onBack, canGoBack, data }: P
           ? "Your eSIM QR code has been generated" 
           : "Your SIM has been successfully activated",
       });
+      // Notify parent component that onboarding is complete
+      onComplete({ 
+        selectedPlan, 
+        selectedSimType, 
+        homeAddress: homeAddress.trim() || undefined,
+        esimData: selectedSimType === 'esim' ? result : undefined
+      });
     },
     onError: (error) => {
       toast({
@@ -100,6 +107,13 @@ export default function PlanSelection({ onComplete, onBack, canGoBack, data }: P
   const plans = Array.isArray(planData) ? planData : [];
   const recommendedPlan = plans.find((plan: any) => plan.isRecommended);
 
+  // Auto-select recommended plan when component loads
+  useEffect(() => {
+    if (recommendedPlan && !selectedPlan) {
+      setSelectedPlan(recommendedPlan.id);
+    }
+  }, [recommendedPlan, selectedPlan]);
+
   if (isLoading) {
     return (
       <Card>
@@ -133,15 +147,35 @@ export default function PlanSelection({ onComplete, onBack, canGoBack, data }: P
                 </div>
               </div>
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                <div className="flex items-center mb-2">
+                <div className="flex items-center mb-3">
                   <QrCode className="w-4 h-4 text-blue-600 mr-2" />
-                  <span className="font-medium text-blue-800">eSIM Activation Instructions</span>
+                  <span className="font-medium text-blue-800">eSIM Activation Steps</span>
                 </div>
-                <p className="text-sm text-blue-700 mb-2">
-                  {esimData.instructions}
-                </p>
-                <div className="text-xs text-blue-600">
-                  <strong>Activation Code:</strong> {esimData.activationCode}
+                <div className="space-y-3 text-sm text-blue-700">
+                  <div className="flex items-start">
+                    <div className="w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-3 mt-0.5 flex-shrink-0">1</div>
+                    <p>Open your device Settings → Cellular/Mobile Data → Add eSIM</p>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-3 mt-0.5 flex-shrink-0">2</div>
+                    <p>Scan the QR code above OR manually enter the activation code</p>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-3 mt-0.5 flex-shrink-0">3</div>
+                    <p>Follow your device prompts to complete the setup</p>
+                  </div>
+                  <div className="flex items-start">
+                    <div className="w-5 h-5 bg-blue-600 text-white rounded-full flex items-center justify-center text-xs mr-3 mt-0.5 flex-shrink-0">4</div>
+                    <p>Your eSIM will be activated within 2-5 minutes</p>
+                  </div>
+                </div>
+                <div className="mt-4 p-3 bg-blue-100 rounded border-l-4 border-blue-600">
+                  <div className="text-xs text-blue-800">
+                    <strong>Activation Code:</strong> {esimData.activationCode}
+                  </div>
+                  <div className="text-xs text-blue-600 mt-1">
+                    Save this code - you may need it for manual activation
+                  </div>
                 </div>
               </div>
             </div>
@@ -241,7 +275,7 @@ export default function PlanSelection({ onComplete, onBack, canGoBack, data }: P
                     <Check className="w-4 h-4 text-success mr-2 flex-shrink-0" />
                     {plan.dataLimit}
                   </li>
-                  {plan.features && Array.isArray(plan.features) && plan.features.map((feature, index) => (
+                  {plan.features && Array.isArray(plan.features) && plan.features.map((feature: string, index: number) => (
                     <li key={index} className="flex items-center">
                       <Check className="w-4 h-4 text-success mr-2 flex-shrink-0" />
                       <span>{feature}</span>
@@ -279,6 +313,7 @@ export default function PlanSelection({ onComplete, onBack, canGoBack, data }: P
                 <Smartphone className="w-8 h-8 text-primary mx-auto mb-2" />
                 <h6 className="font-medium">eSIM</h6>
                 <p className="text-xs text-gray-500">Instant activation</p>
+                <p className="text-xs text-green-600 font-medium mt-1">✓ No physical SIM needed</p>
               </div>
             </div>
             <div
